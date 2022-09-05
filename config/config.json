@@ -1,0 +1,54 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "dips-detalhes-documento-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/dipsDetalhesDocumento/DipsDetalhesDocumentoWebPart.js",
+          "manifest": "./src/webparts/dipsDetalhesDocumento/DipsDetalhesDocumentoWebPart.manifest.json"
+        }
+      ]
+    },
+    "dips-editar-documento-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/dipsEditarDocumento/DipsEditarDocumentoWebPart.js",
+          "manifest": "./src/webparts/dipsEditarDocumento/DipsEditarDocumentoWebPart.manifest.json"
+        }
+      ]
+    },
+    "dips-novo-documento-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/dipsNovoDocumento/DipsNovoDocumentoWebPart.js",
+          "manifest": "./src/webparts/dipsNovoDocumento/DipsNovoDocumentoWebPart.manifest.json"
+        }
+      ]
+    },
+    "dips-todos-documentos-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/dipsTodosDocumentos/DipsTodosDocumentosWebPart.js",
+          "manifest": "./src/webparts/dipsTodosDocumentos/DipsTodosDocumentosWebPart.manifest.json"
+        }
+      ]
+    },
+    "dips-todos-documentos-por-status-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/dipsTodosDocumentosPorStatus/DipsTodosDocumentosPorStatusWebPart.js",
+          "manifest": "./src/webparts/dipsTodosDocumentosPorStatus/DipsTodosDocumentosPorStatusWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "DipsDetalhesDocumentoWebPartStrings": "lib/webparts/dipsDetalhesDocumento/loc/{locale}.js",
+    "DipsEditarDocumentoWebPartStrings": "lib/webparts/dipsEditarDocumento/loc/{locale}.js",
+    "DipsNovoDocumentoWebPartStrings": "lib/webparts/dipsNovoDocumento/loc/{locale}.js",
+    "DipsTodosDocumentosWebPartStrings": "lib/webparts/dipsTodosDocumentos/loc/{locale}.js",
+    "DipsTodosDocumentosPorStatusWebPartStrings": "lib/webparts/dipsTodosDocumentosPorStatus/loc/{locale}.js"
+  }
+}
