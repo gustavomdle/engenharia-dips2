@@ -45,6 +45,7 @@
   },
   "externals": {},
   "localizedResources": {
+    "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
     "DipsDetalhesDocumentoWebPartStrings": "lib/webparts/dipsDetalhesDocumento/loc/{locale}.js",
     "DipsEditarDocumentoWebPartStrings": "lib/webparts/dipsEditarDocumento/loc/{locale}.js",
     "DipsNovoDocumentoWebPartStrings": "lib/webparts/dipsNovoDocumento/loc/{locale}.js",

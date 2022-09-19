@@ -21,7 +21,9 @@ export default class DipsEditarDocumentoWebPart extends BaseClientSideWebPart<ID
     const element: React.ReactElement<IDipsEditarDocumentoProps> = React.createElement(
       DipsEditarDocumento,
       {
-        description: this.properties.description
+        description: this.properties.description,
+        context: this.context,
+        siteurl: this.context.pageContext.web.absoluteUrl,
       }
     );
 

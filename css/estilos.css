@@ -28,6 +28,17 @@
     font-size: 14px;
 }
 
+.labelDetalhes{
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.labelDatapicker {
+    font-weight: normal;
+
+}
+
 
 .ms-TextField-fieldGroup {
     border: 0px;
@@ -43,70 +54,186 @@
     table-layout: auto !important;
 }
 
-
-
-.btnCustom{
+.btnCustom {
     margin-top: 10px;
 }
 
-.hidden{
+.hidden {
     display: none;
+}
+
+.infoDIPS {
+    margin-left: 223px;
+}
+
+.text-164 {
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    height: 39px;
+    font-size: 14px;
+}
+
+.text-206 {
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    height: 39px;
+    font-size: 14px;
+}
+
+.imagensDIPS {
+    max-width: 860px;
+}
+
+.tabelasListas {
+    font-size: 12.5px;
+}
+
+.thTabelaListas {
+
+    background-color: rgb(190, 229, 235) !important;
+
 }
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Firefox */
 input[type=number] {
-  -moz-appearance: textfield;
+    -moz-appearance: textfield;
 }
 
-.break-word{
+.break-word {
     word-break: break-word
 }
 
-.hide{
-    display: none;
+.right {
+    text-align: right;
+}
+
+.headerPreStage {
+    font-size: 13px;
+}
+
+@media print {
+
+    .btn {
+        display: none;
+    }
+
+    .hidePrint {
+        display: none;
+    }
+
+    #headingInformacoesProduto {
+        display: block;
+    }
+
+    #headingPreStageSoftware {
+        display: block;
+    }
+
+    #headingAnexos {
+        display: block;
+    }
+
+    #headingArquivos {
+        display: block;
+    }
+
+    #headingPreStageHardware {
+        display: block;
+    }
+
+    #headingSetupBios {
+        display: block;
+    }
+
+    #headingSetupItensModulos {
+        display: block;
+    }
+
+    #headingCheckList {
+        display: block;
+    }
+
+    #headingFluxoAprovacaoDIPS {
+        display: block;
+    }
+
+    #headingHistorico {
+        display: block;
+    }
+
+
+
+
 }
 
 
 
-/*
-
-
-.react-bootstrap-table-pagination-list{
-    padding-left: 0px !important;
+.ExcelTable2007 {
+    border: 1px solid #B0CBEF;
+    border-width: 1px 0px 0px 1px;
+    font-size: 11pt;
+    font-family: Calibri;
+    font-weight: 100;
+    border-spacing: 0px;
+    border-collapse: collapse;
+    padding: 10px;
 }
 
+.ExcelTable2007 TH {
 
-.fieldGroup-234{
+    background-repeat: repeat-x;
+    font-weight: bold;
+    font-size: 14px;
+    border: 1px solid #9EB6CE;
+    border-width: 0px 1px 1px 0px;
+    height: 17px;
+    line-height: 17px;
+}
+
+.ExcelTable2007 TD {
     border: 0px;
+    background-color: white;
+    padding: 0px 4px 0px 2px;
+    border: 1px solid #D0D7E5;
+    border-width: 0px 1px 1px 0px;
 }
 
-.field-147 {
-    color: #495057;
-    font-size: 1rem;
+.ExcelTable2007 TD B {
+    border: 0px;
+    background-color: white;
+    font-weight: bold;
 }
 
-.field-148 {
-    color: #495057;
-    font-size: 1rem;
+.ExcelTable2007 TD.heading {
+    background-color: #E4ECF7;
+    text-align: center;
+    border: 1px solid #9EB6CE;
+    border-width: 0px 1px 1px 0px;
+    font-weight: bold;
 }
 
-.icon-156 {
-    padding: 4px 5px 5px;
+.ExcelTable2007 TH.heading {
+
+    background-repeat: none;
 }
 
-.my-hovertable > tbody > tr.mytable-hover-row:hover {
-    background-color: rgba(212, 24, 24, 0.822) !important;
+@media screen and (min-width: 1024px){
+
+.ql-editor div, .ql-editor ol, .ql-editor p, .ql-editor ul {
+    font-weight: normal !important; 
+
 }
-*/
-/*
-#gridTodosItens{
-    word-wrap: break-word;
+
 }
-*/
+
+
+p { margin:0 }

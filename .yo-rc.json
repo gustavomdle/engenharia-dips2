@@ -5,7 +5,7 @@
     "environment": "spo",
     "version": "1.13.0",
     "libraryName": "engenharia-dips-diebold",
-    "libraryId": "02565cbe-f4ba-486f-9759-2be27ad41c3d",
+    "libraryId": "01cac13c-4a58-45ef-b79a-6705ef46c1ad",
     "packageManager": "npm",
     "isDomainIsolated": false,
     "componentType": "webpart"

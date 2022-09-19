@@ -21,7 +21,9 @@ export default class DipsNovoDocumentoWebPart extends BaseClientSideWebPart<IDip
     const element: React.ReactElement<IDipsNovoDocumentoProps> = React.createElement(
       DipsNovoDocumento,
       {
-        description: this.properties.description
+        description: this.properties.description,
+        context: this.context,
+        siteurl: this.context.pageContext.web.absoluteUrl,
       }
     );
 

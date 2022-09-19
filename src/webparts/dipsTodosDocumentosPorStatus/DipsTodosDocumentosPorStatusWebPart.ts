@@ -13,6 +13,7 @@ import { IDipsTodosDocumentosPorStatusProps } from './components/IDipsTodosDocum
 
 export interface IDipsTodosDocumentosPorStatusWebPartProps {
   description: string;
+  statusDocumento: string
 }
 
 export default class DipsTodosDocumentosPorStatusWebPart extends BaseClientSideWebPart<IDipsTodosDocumentosPorStatusWebPartProps> {
@@ -21,7 +22,10 @@ export default class DipsTodosDocumentosPorStatusWebPart extends BaseClientSideW
     const element: React.ReactElement<IDipsTodosDocumentosPorStatusProps> = React.createElement(
       DipsTodosDocumentosPorStatus,
       {
-        description: this.properties.description
+        description: this.properties.description,
+        context: this.context,
+        siteurl: this.context.pageContext.web.absoluteUrl,
+        statusDocumento: this.properties.statusDocumento,
       }
     );
 
@@ -49,6 +53,9 @@ export default class DipsTodosDocumentosPorStatusWebPart extends BaseClientSideW
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                }),
+                PropertyPaneTextField('statusDocumento', {
+                  label: "Status do Documento"
                 })
               ]
             }

@@ -21,7 +21,9 @@ export default class DipsTodosDocumentosWebPart extends BaseClientSideWebPart<ID
     const element: React.ReactElement<IDipsTodosDocumentosProps> = React.createElement(
       DipsTodosDocumentos,
       {
-        description: this.properties.description
+        description: this.properties.description,
+        context: this.context,
+        siteurl: this.context.pageContext.web.absoluteUrl,
       }
     );
 
