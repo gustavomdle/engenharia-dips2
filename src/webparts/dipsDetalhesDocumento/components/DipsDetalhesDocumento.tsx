@@ -233,7 +233,7 @@ const tablecolumnsPreStageSoftware = [
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -313,7 +313,7 @@ const tablecolumnsSetupBios = [
     classes: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -350,7 +350,7 @@ const tablecolumnsCheckList = [
     classes: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -387,7 +387,7 @@ const tablecolumnsSetupitensModulos = [
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -434,7 +434,7 @@ const tablecolumnsFluxoAprovacaoDIPS = [
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -473,26 +473,24 @@ const tablecolumnsHistorico = [
     headerClasses: 'text-center',
     headerStyle: { backgroundColor: '#bee5eb' },
   },
-  // {
-  //   dataField: "Created",
-  //   text: "Data de criação",
-  //   headerStyle: { backgroundColor: '#bee5eb' },
-  //   sort: true,
-  //   filter: customFilter,
-  //   classes: 'text-center',
-  //   formatter: (rowContent, row) => {
-  //     var dataCriacao = new Date(row.Created);
-  //     var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
-  //     return dtdataCriacao;
-  //   }
-  // },
-  // {
-  //   dataField: "Author.Title",
-  //   text: "Criado por",
-  //   headerStyle: { backgroundColor: '#bee5eb' },
-  //   sort: true,
-  //   filter: customFilter
-  // },
+  {
+    dataField: "Created",
+    text: "Data de criação",
+    headerStyle: { backgroundColor: '#bee5eb' },
+    headerClasses: 'text-center',
+    classes: 'text-center',
+    formatter: (rowContent, row) => {
+      var dataCriacao = new Date(row.Created);
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
+      return dtdataCriacao;
+    }
+  },
+  {
+    dataField: "Author.Title",
+    text: "Criado por",
+    headerClasses: 'text-center',
+    headerStyle: { backgroundColor: '#bee5eb' },
+  },
 
 ]
 
@@ -1305,7 +1303,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
                 </button>
               </div>
               <div className="modal-body">
-                Deseja realmente excluir esse DIPs?
+                Deseja realmente excluir esse DIPS?
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -1665,7 +1663,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
 
-        console.log("resultData prestage",resultData);
+        console.log("resultData prestage", resultData);
 
         if (resultData.d.results.length > 0) {
 
@@ -2128,7 +2126,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
 
           for (var i = 0; i < resultData.d.results.length; i++) {
 
-            var ultimo = (_arrNomeArquivo.length) - 1;
+            var ultimo = (resultData.d.results.length) - 1;
 
             await _web.lists
               .getByTitle("SetupItensModulos")

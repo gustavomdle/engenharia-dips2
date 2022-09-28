@@ -41,6 +41,7 @@ const selectOptions = {
   'Aguardando aprovação do Suporte': 'Aguardando aprovação do Suporte',
   'Aprovado': 'Aprovado',
   'Em elaboração (Engenharia)': 'Em elaboração (Engenharia)',
+  'Em revisão (Engenharia)': 'Em revisão (Engenharia)',
   'Em revisão (Suporte)': 'Em revisão (Suporte)',
 };
 
@@ -101,7 +102,7 @@ const empTablecolumns = [
     classes: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },

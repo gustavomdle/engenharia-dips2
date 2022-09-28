@@ -179,7 +179,7 @@ const tablecolumnsPreStageSoftware = [
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -255,9 +255,6 @@ const tablecolumnsPreStageSoftware = [
             }} className="btn btn-info btnCustom btn-sm">Excluir</button>&nbsp;
             <button onClick={() => {
 
-              var dataCriacao = new Date(row.Created);
-              var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
-
               jQuery('#txtID').val(row.ID);
               jQuery('#txtComponenteEditar').val(row.Title);
               jQuery('#txtModeloEditar').val(row.Modelo);
@@ -297,7 +294,6 @@ const tablecolumnsPreStageSoftware = [
               console.log("txtObservacao", txtObservacao);
 
               jQuery('#RichTextObservacao').find('.ql-editor').html(`${txtObservacao.trim()}`);
-              //jQuery('#RichTextObservacao').find('.ql-editor').html(`${txtObservacao}`);
 
               _preStageSoftwareObservacaoEditar = observacao;
 
@@ -308,7 +304,7 @@ const tablecolumnsPreStageSoftware = [
             <button onClick={() => {
 
               var dataCriacao = new Date(row.Created);
-              var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+              var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
 
               var componente = row.Title;
               var modelo = row.Modelo;
@@ -401,7 +397,7 @@ const tablecolumnsSetupBios = [
     classes: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -507,7 +503,7 @@ const tablecolumnsSetupBios = [
           <button onClick={() => {
 
             var dataCriacao = new Date(row.Created);
-            var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+            var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
 
             jQuery('#txtItensBIOS').html(row.Title);
             jQuery('#txtParametrosBIOS').html(row.Itens);
@@ -548,7 +544,7 @@ const tablecolumnsSetupitensModulos = [
     classes: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -637,7 +633,7 @@ const tablecolumnsSetupitensModulos = [
                 txtParametros = txtParametros.replace('color="', 'style="color:');
 
               }
-              
+
             }
 
             jQuery('#RichTextParametrosModulosEditar').find('.ql-editor').html(`${txtParametros.trim()}`);
@@ -652,7 +648,7 @@ const tablecolumnsSetupitensModulos = [
           <button onClick={() => {
 
             var dataCriacao = new Date(row.Created);
-            var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+            var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
 
             jQuery('#txtParametrosModulo').html(row.Parametros);
             jQuery('#txtItensModulos').html(row.Title);
@@ -697,7 +693,7 @@ const tablecolumnsCheckList = [
     classes: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -800,7 +796,7 @@ const tablecolumnsCheckList = [
           <button onClick={() => {
 
             var dataCriacao = new Date(row.Created);
-            var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+            var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
 
             jQuery('#txtSN').html(row.Title);
             jQuery('#txtDivergencias').html(row.Divergencias);
@@ -3077,10 +3073,19 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
             else if ((status == "Aprovado")) {
 
-              if ((_grupos.indexOf("DIPS - Engenharia (Elaborador)") !== -1) || (_grupos.indexOf("DIPS - Suporte") !== -1)) {
+              if (_grupos.indexOf("DIPS - Engenharia (Elaborador)") !== -1) {
+
+                //jQuery("#btnValidarRevisaoSuporte").show();
+                jQuery("#btnValidarRevisaoEngenharia").show();
+                jQuery("#divMotivoAprovacao").show();
+
+              }
+
+              if (_grupos.indexOf("DIPS - Suporte") !== -1) {
 
                 jQuery("#btnValidarRevisaoSuporte").show();
-                jQuery("#btnValidarRevisaoEngenharia").show();
+                jQuery("#divMotivoAprovacao").show();
+                //jQuery("#btnValidarRevisaoEngenharia").show();
 
               }
 
@@ -3091,7 +3096,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
               if (_grupos.indexOf("DIPS - Engenharia (Elaborador)") !== -1) {
 
                 jQuery("#btnValidarSalvar").show();
-                jQuery("#btnValidarRevisaoSuporte").show();
+                jQuery("#btnValidarAprovacaoSuporte").show();
 
               }
 
@@ -3113,7 +3118,6 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
               if (_grupos.indexOf("DIPS - Suporte") !== -1) {
 
-                jQuery("#btnValidarReprovar").show();
                 jQuery("#btnValidarAprovar").show();
                 jQuery("#divMotivoAprovacao").show();
 
@@ -3216,15 +3220,31 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
             var outrasInformacoes = resultData.d.results[i].OutrasInformacoes;
             var cleanOutrasInformacoes = "";
+            var txtOutrasInformacoes;
+
 
             if (outrasInformacoes != null) {
 
-              cleanOutrasInformacoes = outrasInformacoes.substr(0, outrasInformacoes.indexOf('</div>'));
-              cleanOutrasInformacoes = cleanOutrasInformacoes.split('">').pop();
+              txtOutrasInformacoes = outrasInformacoes.replace(/<[\/]{0,1}(div)[^><]*>/g, "");
+              console.log("txtParametros", txtOutrasInformacoes);
 
-              jQuery('#richTextOutrasInformacoes').find('.ql-editor').html(cleanOutrasInformacoes);
+              if (txtOutrasInformacoes.includes("<font")) {
+
+                txtOutrasInformacoes = txtOutrasInformacoes.replace("font", "span");
+                txtOutrasInformacoes = txtOutrasInformacoes.replace("font", "span");
+
+              }
+
+              if (txtOutrasInformacoes.includes("color")) {
+
+                txtOutrasInformacoes = txtOutrasInformacoes.replace('color="', 'style="color:');
+
+              }
 
             }
+
+            jQuery('#richTextOutrasInformacoes').find('.ql-editor').html(`${txtOutrasInformacoes.trim()}`);
+
 
             _pacoteAdicionalSO = pacoteAdicionalSO;
             _midiaMatriz = midiaMatriz;
@@ -3245,6 +3265,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             if (dataLiberacaoMidiaMatriz != null) {
 
               var dtdataLiberacaoMidiaMatriz = new Date(dataLiberacaoMidiaMatriz);
+
               _dataLiberacaoMidiaMatriz = dtdataLiberacaoMidiaMatriz;
 
             } else _dataLiberacaoMidiaMatriz = null;
@@ -4354,6 +4375,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     var cliente = $("#ddlCliente option:selected").text();
     var SSTGira = $("#txtSSTGira").val();
     var codIndustrial = $("#txtCodIndustrial").val();
+    var motivo = $("#txtMotivoAprovacao").val();
 
     var arrInstalacaoMidiaMatriz = [];
     $.each($("input[name='checkInstalacaoMidiaMatriz']:checked"), function () {
@@ -4449,26 +4471,58 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     if (opcao == "Salvar") {
       jQuery("#modalConfirmar").modal({ backdrop: 'static', keyboard: false });
     }
-    else if (opcao == "EnviarAprovacao") {
-      jQuery("#modalConfirmarEnviarAprovacao").modal({ backdrop: 'static', keyboard: false });
-    }
-    else if (opcao == "EnviarRevisaoSuporte") {
-      jQuery("#modalConfirmarRevisaoSuporte").modal({ backdrop: 'static', keyboard: false });
-    }
-    else if (opcao == "EnviarRevisaoEngenharia") {
-      jQuery("#modalConfirmarRevisaoEngenharia").modal({ backdrop: 'static', keyboard: false });
-    }
-    else if (opcao == "Aprovar") {
-      jQuery("#modalConfirmarAprovar").modal({ backdrop: 'static', keyboard: false });
-    }
-    else if (opcao == "Reprovar") {
 
-      var motivo = $("#txtMotivoAprovacao").val();
+    else if (opcao == "EnviarAprovacao") {
+
+      jQuery("#modalConfirmarEnviarAprovacao").modal({ backdrop: 'static', keyboard: false });
+
+    }
+
+    else if (opcao == "EnviarRevisaoSuporte") {
 
       if (motivo == "") {
+
         alert("Forneça um motivo para reprovação!");
         document.getElementById('headingAcoes').scrollIntoView();
         return false;
+
+      }
+
+      jQuery("#modalConfirmarRevisaoSuporte").modal({ backdrop: 'static', keyboard: false });
+
+    }
+
+    else if (opcao == "EnviarRevisaoEngenharia") {
+
+      if (motivo == "") {
+
+        alert("Forneça um motivo para reprovação!");
+        document.getElementById('headingAcoes').scrollIntoView();
+        return false;
+
+      }
+
+      jQuery("#modalConfirmarRevisaoEngenharia").modal({ backdrop: 'static', keyboard: false });
+
+    }
+
+    else if (opcao == "Aprovar") {
+
+      jQuery("#modalConfirmarAprovar").modal({ backdrop: 'static', keyboard: false });
+
+    }
+
+    else if (opcao == "Reprovar") {
+
+      if (_status == "Aguardando aprovação do Suporte") {
+
+        if (motivo == "") {
+
+          alert("Forneça um motivo para reprovação!");
+          document.getElementById('headingAcoes').scrollIntoView();
+          return false;
+
+        }
 
       }
       jQuery("#modalConfirmarReprovar").modal({ backdrop: 'static', keyboard: false });
@@ -4516,6 +4570,15 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     });
 
     var sistemaOperacional = $("#ddlSistemaOperacional").val();
+
+    var vlrSistemaOpercional;
+
+    if (sistemaOperacional == "Outros") {
+      vlrSistemaOpercional = jQuery("#txtSistemaOperacionalOutros").val();
+    } else {
+      vlrSistemaOpercional = jQuery("#ddlSistemaOperacional").val();
+    }
+
     var outrasInformacoes = _outrasInformacoes;
 
     var pacoteAdicionalSO;
@@ -4626,7 +4689,16 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
         _arrAlteracoesFormPrincipal.push(`O campo "Versão da Mídia (Mídia Matriz)" foi alterado de "${_versaoMidiaMatrizAtual}" para "${versaoMidiaMatriz}"`);
         console.log(`O campo "Versão da Mídia (Mídia Matriz)" foi alterado de "${_versaoMidiaMatrizAtual}" para "${versaoMidiaMatriz}"`);
       }
-      if (_dataLiberacaoMidiaMatrizAtual != formDataLiberacaoMidiaMatriz) {
+
+      var strDataLiberacaoMidiaMAtriz = "";
+
+      if(_dataLiberacaoMidiaMatriz != null){
+
+      var strDataLiberacaoMidiaMAtriz = _dataLiberacaoMidiaMatriz.getFullYear() + '-' + ("0" + (_dataLiberacaoMidiaMatriz.getMonth() + 1)).slice(-2) + '-' + ("0" + _dataLiberacaoMidiaMatriz.getDate()).slice(-2);
+
+      }
+
+      if (strDataLiberacaoMidiaMAtriz != formDataLiberacaoMidiaMatriz) {
         _arrAlteracoesFormPrincipal.push(`O campo "Data de Liberação (Mídia Matriz)" foi alterado de "${_dataLiberacaoMidiaMatrizAtual}" para "${formDataLiberacaoMidiaMatriz}"`);
         console.log(`O campo "Data de Liberação (Mídia Matriz)" foi alterado de "${_dataLiberacaoMidiaMatrizAtual}" para "${formDataLiberacaoMidiaMatriz}"`);
       }
@@ -4692,8 +4764,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
         cleanOutrasInformacoesAtual = cleanOutrasInformacoesAtual.replace("&quot;", '"');
       }
 
-      console.log("cleanOutrasInformacoesAtual",cleanOutrasInformacoesAtual);
-      console.log("cleanOutrasInformacoes",cleanOutrasInformacoes);
+      console.log("cleanOutrasInformacoesAtual", cleanOutrasInformacoesAtual);
+      console.log("cleanOutrasInformacoes", cleanOutrasInformacoes);
 
       if (cleanOutrasInformacoes != cleanOutrasInformacoesAtual) {
         _arrAlteracoesFormPrincipal.push(`O campo "Outras Informações" foi alterado de "${cleanOutrasInformacoesAtual}" para "${cleanOutrasInformacoes}"`);
@@ -4718,7 +4790,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
         MidiaMatrizInstalacao: { "results": arrInstalacaoMidiaMatriz },
         PacoteAdicionalSO: pacoteAdicionalSO,
         MidiaMatriz: midiaMatriz,
-        SistemaOperacionalSiteNovo: sistemaOperacional,
+        SistemaOperacionalSiteNovo: vlrSistemaOpercional,
         OutrasInformacoes: outrasInformacoes,
         Status: status,
         Versao: versao,
@@ -4854,6 +4926,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
   protected async criarTarefa(opcao) {
 
+    var motivo = $("#txtMotivoAprovacao").val();
+
     if (opcao == "Salvar") {
 
       if (_arrAlteracoesFormPrincipal.length != 0) {
@@ -4904,10 +4978,18 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
     else if (opcao == "EnviarRevisaoSuporte") {
 
+      var titulo;
+
+      if (motivo == "") {
+        titulo = "DIPS enviado para revisão do Suporte"
+      } else {
+        titulo = "DIPS enviado para revisão do Suporte: " + motivo
+      }
+
       await _web.lists
         .getByTitle("Reprovações do Suporte")
         .items.add({
-          Title: "DIPS enviado para revisão do Suporte",
+          Title: titulo,
           DIPSId: _documentoID,
           VersaoReprovada: _versao.toString(),
           StatusAnterior: _status,
@@ -4936,10 +5018,18 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
     else if (opcao == "EnviarRevisaoEngenharia") {
 
+      var titulo;
+
+      if (motivo == "") {
+        titulo = "DIPS enviado para revisão da Engenharia"
+      } else {
+        titulo = "DIPS enviado para revisão da Engenharia: " + motivo
+      }
+
       await _web.lists
         .getByTitle("Reprovações do Suporte")
         .items.add({
-          Title: "DIPS enviado para revisão do Suporte",
+          Title: titulo,
           DIPSId: _documentoID,
           VersaoReprovada: _versao.toString(),
           StatusAnterior: _status,
@@ -4968,7 +5058,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
     else if (opcao == "Aprovar") {
 
-      var motivo = $("#txtMotivoAprovacao").val();
+
       var titulo;
 
       if (motivo == "") {
@@ -5025,7 +5115,6 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
             console.log("entrou no segundo nivel");
 
-            var motivo = $("#txtMotivoAprovacao").val();
             await _web.lists
               .getByTitle("Reprovações do Suporte")
               .items.add({

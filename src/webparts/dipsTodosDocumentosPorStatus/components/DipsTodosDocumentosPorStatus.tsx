@@ -37,13 +37,6 @@ const customFilter = textFilter({
   placeholder: ' ',  // custom the input placeholder
 });
 
-const selectOptions = {
-  'Aguardando aprovação do Suporte': 'Aguardando aprovação do Suporte',
-  'Aprovado': 'Aprovado',
-  'Em elaboração (Engenharia)': 'Em elaboração (Engenharia)',
-  'Em revisão (Suporte)': 'Em revisão (Suporte)',
-};
-
 const empTablecolumns = [
   {
     dataField: "ID",
@@ -92,7 +85,7 @@ const empTablecolumns = [
     classes: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -113,7 +106,7 @@ const empTablecolumns = [
       var urlDetalhes = `Documentos-Detalhes.aspx?DocumentoID=` + id;
       var urlEditar = `Documentos-Editar.aspx?DocumentoID=` + id;
 
-      if (status == "Em elaboração (Engenharia)") {
+      if ((status == "Em elaboração (Engenharia)") || (status == "Em revisão (Engenharia)")) {
 
         if (_grupos.indexOf("DIPS - Engenharia (Elaborador)") !== -1) {
 
@@ -136,7 +129,7 @@ const empTablecolumns = [
 
       }
 
-      else if (status == "Aguardando aprovação do Suporte") {
+      else if ((status == "Aguardando aprovação do Suporte") || (status == "Em revisão (Suporte)")) {
 
         if (_grupos.indexOf("DIPS - Suporte") !== -1) {
 
@@ -181,7 +174,6 @@ const empTablecolumns = [
         }
 
       }
-
 
       else {
 
@@ -270,6 +262,7 @@ export default class DipsTodosDocumentosPorStatus extends React.Component<IDipsT
     else if (statusDocumento == "Aprovado") var url = `${this.props.siteurl}/_api/web/lists/getbytitle('Documentos')/items?$top=4999&$orderby= ID desc&$select=ID,NomeProduto,Title,Versao,Status,Cliente,Created,Author/Title&$expand=Author&$filter= Status eq 'Aprovado'`;
     else if (statusDocumento == "Em elaboração (Engenharia)") var url = `${this.props.siteurl}/_api/web/lists/getbytitle('Documentos')/items?$top=4999&$orderby= ID desc&$select=ID,NomeProduto,Title,Versao,Status,Cliente,Created,Author/Title&$expand=Author&$filter= Status eq 'Em elaboração (Engenharia)'`;
     else if (statusDocumento == "Em revisão (Suporte)") var url = `${this.props.siteurl}/_api/web/lists/getbytitle('Documentos')/items?$top=4999&$orderby= ID desc&$select=ID,NomeProduto,Title,Versao,Status,Cliente,Created,Author/Title&$expand=Author&$filter= Status eq 'Em revisão (Suporte)'`;
+    else if (statusDocumento == "Em revisão (Engenharia)") var url = `${this.props.siteurl}/_api/web/lists/getbytitle('Documentos')/items?$top=4999&$orderby= ID desc&$select=ID,NomeProduto,Title,Versao,Status,Cliente,Created,Author/Title&$expand=Author&$filter= Status eq 'Em revisão (Engenharia)'`;
 
     jQuery.ajax({
       url: url,

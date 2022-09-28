@@ -3,7 +3,7 @@
   "solution": {
     "name": "engenharia-dips-diebold",
     "id": "01cac13c-4a58-45ef-b79a-6705ef46c1ad",
-    "version": "1.0.1.9",
+    "version": "1.0.3.2",
     "includeClientSideAssets": true,
     "isDomainIsolated": false,
     "developer": {
