@@ -4692,9 +4692,9 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
       var strDataLiberacaoMidiaMAtriz = "";
 
-      if(_dataLiberacaoMidiaMatriz != null){
+      if (_dataLiberacaoMidiaMatriz != null) {
 
-      var strDataLiberacaoMidiaMAtriz = _dataLiberacaoMidiaMatriz.getFullYear() + '-' + ("0" + (_dataLiberacaoMidiaMatriz.getMonth() + 1)).slice(-2) + '-' + ("0" + _dataLiberacaoMidiaMatriz.getDate()).slice(-2);
+        var strDataLiberacaoMidiaMAtriz = _dataLiberacaoMidiaMatriz.getFullYear() + '-' + ("0" + (_dataLiberacaoMidiaMatriz.getMonth() + 1)).slice(-2) + '-' + ("0" + _dataLiberacaoMidiaMatriz.getDate()).slice(-2);
 
       }
 
@@ -5099,100 +5099,35 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
     else if (opcao == "Reprovar") {
 
+      console.log("entrou no segundo nivel");
 
-      if (_novoStatus != "Em revisão (Engenharia)") {
+      await _web.lists
+        .getByTitle("Reprovações do Suporte")
+        .items.add({
+          Title: "Reprovação do Suporte: " + motivo,
+          DIPSId: _documentoID,
+          VersaoReprovada: _versao.toString(),
+          StatusAnterior: _status,
+          StatusAtual: _novoStatus
+        })
+        .then(response => {
 
-        await _web.lists
-          .getByTitle("Reprovações do Suporte")
-          .items.add({
-            Title: "DIPS mantido sob avaliação da Engenharia",
-            DIPSId: _documentoID,
-            VersaoReprovada: _versao.toString(),
-            StatusAnterior: _status,
-            StatusAtual: _novoStatus
-          })
-          .then(async response => {
+          if (_arrAlteracoesFormPrincipal.length != 0) {
 
-            console.log("entrou no segundo nivel");
+            this.gravaHistoricoAlteracaoFormularioPrincipal(opcao);
 
-            await _web.lists
-              .getByTitle("Reprovações do Suporte")
-              .items.add({
-                Title: "Reprovação do Suporte: " + motivo,
-                DIPSId: _documentoID,
-                VersaoReprovada: _versao.toString(),
-                StatusAnterior: _status,
-                StatusAtual: _novoStatus
-              })
-              .then(response => {
+          } else {
 
-                if (_arrAlteracoesFormPrincipal.length != 0) {
+            $("#modalCarregando").modal('hide');
+            jQuery("#modalSucessoReprovado").modal({ backdrop: 'static', keyboard: false });
 
-                  this.gravaHistoricoAlteracaoFormularioPrincipal(opcao);
+          }
 
-                } else {
+        })
+        .catch((error: any) => {
+          console.log(error);
+        })
 
-                  $("#modalCarregando").modal('hide');
-                  jQuery("#modalSucessoReprovado").modal({ backdrop: 'static', keyboard: false });
-
-                }
-
-              })
-              .catch((error: any) => {
-                console.log(error);
-              })
-
-          })
-          .catch((error: any) => {
-            console.log(error);
-          })
-
-      } else {
-
-        await _web.lists
-          .getByTitle("Reprovações do Suporte")
-          .items.add({
-            Title: "DIPS mantido sob revisão da Engenharia",
-            DIPSId: _documentoID,
-            VersaoReprovada: _versao.toString(),
-            StatusAnterior: _status,
-            StatusAtual: _novoStatus
-          })
-          .then(async response => {
-
-            var motivo = $("#txtMotivoAprovacao").val();
-            await _web.lists
-              .getByTitle("Reprovações do Suporte")
-              .items.add({
-                Title: "Reprovação do Suporte: " + motivo,
-                DIPSId: _documentoID,
-                VersaoReprovada: _versao.toString(),
-                StatusAnterior: _status,
-                StatusAtual: _novoStatus
-              })
-              .then(response => {
-
-                if (_arrAlteracoesFormPrincipal.length != 0) {
-
-                  this.gravaHistoricoAlteracaoFormularioPrincipal(opcao);
-
-                } else {
-
-                  $("#modalCarregando").modal('hide');
-                  jQuery("#modalSucessoReprovado").modal({ backdrop: 'static', keyboard: false });
-
-                }
-              })
-              .catch((error: any) => {
-                console.log(error);
-              })
-
-          })
-          .catch((error: any) => {
-            console.log(error);
-          })
-
-      }
 
     }
 
