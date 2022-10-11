@@ -659,12 +659,12 @@ export default class DipsNovoDocumento extends React.Component<IDipsNovoDocument
     var responsavelPacoteAdicional = jQuery("#txtResponsavelPacoteAdicional").val();
     var versaoMidiaMatriz = jQuery("#txtVersaoMidiaMatriz").val();
 
-    var dataLiberacaoMidiaMatriz = "" + jQuery("#dtDataLiberacaoMidiaMatriz-label").val() + "";
+    var dataLiberacaoMidiaMatriz = `${jQuery("#dtDataLiberacaoMidiaMatriz-label").val()}`;
     var dataLiberacaoMidiaMatrizDia = dataLiberacaoMidiaMatriz.substring(0, 2);
     var dataLiberacaoMidiaMatrizMes = dataLiberacaoMidiaMatriz.substring(3, 5);
     var dataLiberacaoMidiaMatrizAno = dataLiberacaoMidiaMatriz.substring(6, 10);
     var formDataLiberacaoMidiaMatriz = dataLiberacaoMidiaMatrizAno + "-" + dataLiberacaoMidiaMatrizMes + "-" + dataLiberacaoMidiaMatrizDia;
-
+    
     if (dataLiberacaoMidiaMatriz == "") formDataLiberacaoMidiaMatriz = null;
 
     var arquivoRoteiro = jQuery("#txtArquivoRoteiro").val();
@@ -731,7 +731,7 @@ export default class DipsNovoDocumento extends React.Component<IDipsNovoDocument
     //   console.log("descricaoPacoteAdicional", descricaoPacoteAdicional);
     //  console.log("responsavelPacoteAdicional", responsavelPacoteAdicional);
     //  console.log("versaoMidiaMatriz", versaoMidiaMatriz);
-    //  console.log("formLiberacaoMidiaMatriz", formDataLiberacaoMidiaMatriz);
+    console.log("formDataLiberacaoMidiaMatriz", formDataLiberacaoMidiaMatriz);
     //  console.log("arquivoRoteiro", arquivoRoteiro);
     //   console.log("responsavelGeracaoMidiaMatriz", responsavelGeracaoMidiaMatriz);
     //console.log("arrInstalacaoMidiaMatriz", arrInstalacaoMidiaMatriz);
@@ -740,7 +740,6 @@ export default class DipsNovoDocumento extends React.Component<IDipsNovoDocument
     //  console.log("arrMidiaMatriz", arrMidiaMatriz[0]);
     //   console.log("sistemaOperacional", sistemaOperacional);
     //   console.log("outrasInformacoes", outrasInformacoes);
-
 
     await _web.lists
       .getByTitle("Documentos")

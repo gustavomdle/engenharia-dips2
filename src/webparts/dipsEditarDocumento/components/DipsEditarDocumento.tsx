@@ -1,8 +1,5 @@
 import * as React from 'react';
-import styles from './DipsEditarDocumento.module.scss';
 import { IDipsEditarDocumentoProps } from './IDipsEditarDocumentoProps';
-import { escape } from '@microsoft/sp-lodash-subset';
-
 import * as jquery from 'jquery';
 import * as $ from "jquery";
 import * as jQuery from "jquery";
@@ -11,19 +8,17 @@ import "bootstrap";
 import "@pnp/sp/webs";
 import "@pnp/sp/folders";
 import { Web } from "sp-pnp-js";
-import pnp from "sp-pnp-js";
-import { ICamlQuery } from '@pnp/sp/lists';
-import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { allowOverscrollOnElement, DatePicker } from 'office-ui-fabric-react';
-import { PrimaryButton, Stack, MessageBar, MessageBarType } from 'office-ui-fabric-react';
-import { DateTimePicker, DateConvention, TimeConvention } from '@pnp/spfx-controls-react/lib/DateTimePicker';
 import { RichText } from "@pnp/spfx-controls-react/lib/RichText";
-import { SiteUser } from 'sp-pnp-js/lib/sharepoint/siteusers';
 import { UrlQueryParameterCollection, Version } from '@microsoft/sp-core-library';
 import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import { OutTable, ExcelRenderer } from 'react-excel-renderer';
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
@@ -42,7 +37,6 @@ var _midiaMatriz = [];
 var _pos = 0;
 var _pos2 = 0;
 var _idParaExcluir;
-//var _observacaoPreStage;
 var _preStageSoftwareObservacao = "";
 var _preStageSoftwareObservacaoEditar = "";
 var _setupBIOSParametrosEditar = "";
@@ -197,166 +191,255 @@ const tablecolumnsPreStageSoftware = [
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
       var id = row.ID;
-      var status = row.Status
-      var urlDetalhes = `Instrumento-Detalhes.aspx?InstrumentoID=` + id;
-      var urlEditar = `Instrumento-Editar.aspx?InstrumentoID=` + id;
 
-      //console.log("_grupos", _grupos);
+      var mostraBotao = false;
 
-      //  if (_grupos.indexOf("Proprietários do Calibração") !== -1) {
-      return (
-        <>
-          <div>
-            <button onClick={async () => {
+      if (_status == "Em elaboração (Engenharia)") {
 
-              if (confirm("Deseja realmente excluir o Pre Stage de Hardware: " + row.Title + "?") == true) {
+        if (_grupos.indexOf("DIPS - Engenharia (Elaborador)") !== -1) {
 
-                const list = _web.lists.getByTitle("Pre Stage de Hardware");
-                await list.items.getById(id).recycle()
-                  .then(async response => {
+          mostraBotao = true;
 
-                    var texto = `O item ${row.Title} foi eliminado da lista Pre Stage de Hardware`
+        }
 
-                    await _web.lists
-                      .getByTitle("Reprovações do Suporte")
-                      .items.add({
-                        Title: texto,
-                        DIPSId: _documentoID,
-                        VersaoReprovada: _versao.toString(),
-                        StatusAnterior: "Item eliminado",
-                        StatusAtual: _status
-                      })
-                      .then(response => {
+      }
 
-                        console.log("Item excluido!");
-                        jQuery("#modalSucessoExcluirPreStage").modal({ backdrop: 'static', keyboard: false });
+      else if (_status == "Em revisão (Engenharia)") {
 
-                      })
-                      .catch((error: any) => {
-                        console.log(error);
-                      })
+        if (_grupos.indexOf("DIPS - Engenharia (Elaborador)") !== -1) {
+
+          mostraBotao = true;
+
+        }
+
+      }
+
+      else if (_status == "Em revisão (Suporte)") {
+
+        if (_grupos.indexOf("DIPS - Suporte") !== -1) {
+
+          mostraBotao = true;
+
+        }
+
+      }
+
+      console.log("mostraBotao",mostraBotao);
+
+      if (mostraBotao) {
+
+        return (
+          <>
+            <div>
+              <button onClick={async () => {
+
+                if (confirm("Deseja realmente excluir o Pre Stage de Hardware: " + row.Title + "?") == true) {
+
+                  const list = _web.lists.getByTitle("Pre Stage de Hardware");
+                  await list.items.getById(id).recycle()
+                    .then(async response => {
+
+                      var texto = `O item ${row.Title} foi eliminado da lista Pre Stage de Hardware`
+
+                      await _web.lists
+                        .getByTitle("Reprovações do Suporte")
+                        .items.add({
+                          Title: texto,
+                          DIPSId: _documentoID,
+                          VersaoReprovada: _versao.toString(),
+                          StatusAnterior: "Item eliminado",
+                          StatusAtual: _status
+                        })
+                        .then(response => {
+
+                          console.log("Item excluido!");
+                          jQuery("#modalSucessoExcluirPreStage").modal({ backdrop: 'static', keyboard: false });
+
+                        })
+                        .catch((error: any) => {
+                          console.log(error);
+                        })
 
 
-                  })
-                  .catch((error: any) => {
-                    console.log(error);
+                    })
+                    .catch((error: any) => {
+                      console.log(error);
 
-                  })
-
-
-              } else {
-
-                return false.valueOf;
-              }
+                    })
 
 
+                } else {
+
+                  return false.valueOf;
+                }
 
 
-            }} className="btn btn-info btnCustom btn-sm">Excluir</button>&nbsp;
-            <button onClick={() => {
 
-              jQuery('#txtID').val(row.ID);
-              jQuery('#txtComponenteEditar').val(row.Title);
-              jQuery('#txtModeloEditar').val(row.Modelo);
-              jQuery('#txtFabricanteEditar').val(row.Fabricante);
-              jQuery('#txtFWEditar').val(row.FW);
-              jQuery('#txtBIOSEditar').val(row.BIOS);
-              jQuery('#txtConexaoEditar').val(row.Conexao);
-              jQuery('#txtPORTEditar').val(row.PORT);
-              jQuery('#txtSLOTEditar').val(row.SLOT);
-              jQuery('#txtItemObrigatorioEditar').val(row.ItemObrigatorio);
 
-              var observacao = row.Observacao;
-              var txtObservacao = "";
+              }} className="btn btn-info btnCustom btn-sm btnEdicaoListas">Excluir</button>&nbsp;
 
-              console.log("observacao", observacao);
 
-              if (observacao != null) {
+              <button onClick={() => {
 
-                txtObservacao = observacao.replace(/<[\/]{0,1}(div)[^><]*>/g, "");
+                jQuery('#txtID').val(row.ID);
+                jQuery('#txtComponenteEditar').val(row.Title);
+                jQuery('#txtModeloEditar').val(row.Modelo);
+                jQuery('#txtFabricanteEditar').val(row.Fabricante);
+                jQuery('#txtFWEditar').val(row.FW);
+                jQuery('#txtBIOSEditar').val(row.BIOS);
+                jQuery('#txtConexaoEditar').val(row.Conexao);
+                jQuery('#txtPORTEditar').val(row.PORT);
+                jQuery('#txtSLOTEditar').val(row.SLOT);
+                jQuery('#txtItemObrigatorioEditar').val(row.ItemObrigatorio);
+
+                var observacao = row.Observacao;
+                var txtObservacao = "";
+
+                console.log("observacao", observacao);
+
+                if (observacao != null) {
+
+                  txtObservacao = observacao.replace(/<[\/]{0,1}(div)[^><]*>/g, "");
+                  console.log("txtObservacao", txtObservacao);
+
+                  if (txtObservacao.includes("<font")) {
+
+                    txtObservacao = txtObservacao.replace("font", "span");
+                    txtObservacao = txtObservacao.replace("font", "span");
+
+                  }
+
+                  if (txtObservacao.includes("color")) {
+
+                    txtObservacao = txtObservacao.replace('color="', 'style="color:');
+
+                  }
+
+                  txtObservacao = txtObservacao.trim();
+
+                }
+
                 console.log("txtObservacao", txtObservacao);
 
-                if (txtObservacao.includes("<font")) {
+                jQuery('#RichTextObservacao').find('.ql-editor').html(`${txtObservacao}`);
 
-                  txtObservacao = txtObservacao.replace("font", "span");
-                  txtObservacao = txtObservacao.replace("font", "span");
+                _preStageSoftwareObservacaoEditar = observacao;
 
-                }
+                jQuery("#modalEditarPreStageSoftware").modal({ backdrop: 'static', keyboard: false })
 
-                if (txtObservacao.includes("color")) {
+              }} className="btn btn-info btnCustom btn-sm btnEdicaoListas">Editar</button>&nbsp;
 
-                  txtObservacao = txtObservacao.replace('color="', 'style="color:');
 
-                }
 
-              }
 
-              console.log("txtObservacao", txtObservacao);
+              <button onClick={() => {
 
-              jQuery('#RichTextObservacao').find('.ql-editor').html(`${txtObservacao.trim()}`);
+                var dataCriacao = new Date(row.Created);
+                var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
 
-              _preStageSoftwareObservacaoEditar = observacao;
+                var componente = row.Title;
+                var modelo = row.Modelo;
+                var fabricante = row.Fabricante;
+                var FW = row.FW;
+                var BIOS = row.BIOS;
+                var conexao = row.Conexao;
+                var PORT = row.PORT;
+                var SLOT = row.SLOT;
+                var itemObrigatorio = row.ItemObrigatorio;
+                var observacao = row.Observacao;
 
-              jQuery("#modalEditarPreStageSoftware").modal({ backdrop: 'static', keyboard: false })
+                console.log("observacao", observacao);
 
-            }} className="btn btn-info btnCustom btn-sm">Editar</button>&nbsp;
+                if (componente == "undefined") componente = "";
+                if (modelo == "undefined") modelo = "";
+                if (fabricante == "undefined") fabricante = "";
+                if (FW == "undefined") FW = "";
+                if (BIOS == "undefined") BIOS = "";
+                if (conexao == "undefined") conexao = "";
+                if (PORT == "undefined") PORT = "";
+                if (SLOT == "undefined") SLOT = "";
+                if (itemObrigatorio == "undefined") itemObrigatorio = "";
 
-            <button onClick={() => {
+                if (observacao != null) if (observacao.includes("undefined")) observacao = "";
 
-              var dataCriacao = new Date(row.Created);
-              var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
+                jQuery('#txtComponente').html(componente);
+                jQuery('#txtModelo').html(modelo);
+                jQuery('#txtFabricante').html(fabricante);
+                jQuery('#txtFW').html(FW);
+                jQuery('#txtBIOS').html(BIOS);
+                jQuery('#txtConexao').html(conexao);
+                jQuery('#txtPORT').html(PORT);
+                jQuery('#txtSLOT').html(SLOT);
+                jQuery('#txtItemObrigatorio').html(itemObrigatorio);
+                jQuery('#txtObservacao').html(observacao);
+                jQuery('#txtCriado').html(dtdataCriacao);
+                jQuery('#txtCriadoPor').html(row.Author.Title);
+                jQuery("#modalDetalhesPreStageSoftware").modal({ backdrop: 'static', keyboard: false })
 
-              var componente = row.Title;
-              var modelo = row.Modelo;
-              var fabricante = row.Fabricante;
-              var FW = row.FW;
-              var BIOS = row.BIOS;
-              var conexao = row.Conexao;
-              var PORT = row.PORT;
-              var SLOT = row.SLOT;
-              var itemObrigatorio = row.ItemObrigatorio;
-              var observacao = row.Observacao;
+              }} className="btn btn-info btnCustom btn-sm ">Detalhes</button>
+            </div>
+          </>
+        )
 
-              console.log("observacao", observacao);
+      }
+      else {
 
-              if (componente == "undefined") componente = "";
-              if (modelo == "undefined") modelo = "";
-              if (fabricante == "undefined") fabricante = "";
-              if (FW == "undefined") FW = "";
-              if (BIOS == "undefined") BIOS = "";
-              if (conexao == "undefined") conexao = "";
-              if (PORT == "undefined") PORT = "";
-              if (SLOT == "undefined") SLOT = "";
-              if (itemObrigatorio == "undefined") itemObrigatorio = "";
+        return (
+          <>
+            <div>
 
-              if (observacao != null) if (observacao.includes("undefined")) observacao = "";
+              <button onClick={() => {
 
-              jQuery('#txtComponente').html(componente);
-              jQuery('#txtModelo').html(modelo);
-              jQuery('#txtFabricante').html(fabricante);
-              jQuery('#txtFW').html(FW);
-              jQuery('#txtBIOS').html(BIOS);
-              jQuery('#txtConexao').html(conexao);
-              jQuery('#txtPORT').html(PORT);
-              jQuery('#txtSLOT').html(SLOT);
-              jQuery('#txtItemObrigatorio').html(itemObrigatorio);
-              jQuery('#txtObservacao').html(observacao);
-              jQuery('#txtCriado').html(dtdataCriacao);
-              jQuery('#txtCriadoPor').html(row.Author.Title);
-              jQuery("#modalDetalhesPreStageSoftware").modal({ backdrop: 'static', keyboard: false })
+                var dataCriacao = new Date(row.Created);
+                var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
 
-            }} className="btn btn-info btnCustom btn-sm">Detalhes</button>
-          </div>
-        </>
-      )
-      //   } else {
+                var componente = row.Title;
+                var modelo = row.Modelo;
+                var fabricante = row.Fabricante;
+                var FW = row.FW;
+                var BIOS = row.BIOS;
+                var conexao = row.Conexao;
+                var PORT = row.PORT;
+                var SLOT = row.SLOT;
+                var itemObrigatorio = row.ItemObrigatorio;
+                var observacao = row.Observacao;
 
-      //    return (
-      //     <>
-      //      <a href={urlDetalhes}><button className="btn btn-info btnCustom">Exibir</button></a>
-      //   </>
-      //    )
-      // }
+                console.log("observacao", observacao);
+
+                if (componente == "undefined") componente = "";
+                if (modelo == "undefined") modelo = "";
+                if (fabricante == "undefined") fabricante = "";
+                if (FW == "undefined") FW = "";
+                if (BIOS == "undefined") BIOS = "";
+                if (conexao == "undefined") conexao = "";
+                if (PORT == "undefined") PORT = "";
+                if (SLOT == "undefined") SLOT = "";
+                if (itemObrigatorio == "undefined") itemObrigatorio = "";
+
+                if (observacao != null) if (observacao.includes("undefined")) observacao = "";
+
+                jQuery('#txtComponente').html(componente);
+                jQuery('#txtModelo').html(modelo);
+                jQuery('#txtFabricante').html(fabricante);
+                jQuery('#txtFW').html(FW);
+                jQuery('#txtBIOS').html(BIOS);
+                jQuery('#txtConexao').html(conexao);
+                jQuery('#txtPORT').html(PORT);
+                jQuery('#txtSLOT').html(SLOT);
+                jQuery('#txtItemObrigatorio').html(itemObrigatorio);
+                jQuery('#txtObservacao').html(observacao);
+                jQuery('#txtCriado').html(dtdataCriacao);
+                jQuery('#txtCriadoPor').html(row.Author.Title);
+                jQuery("#modalDetalhesPreStageSoftware").modal({ backdrop: 'static', keyboard: false })
+
+              }} className="btn btn-info btnCustom btn-sm ">Detalhes</button>
+            </div>
+          </>
+        )
+
+
+
+      }
 
     }
   }
@@ -374,16 +457,7 @@ const tablecolumnsSetupBios = [
     dataField: "Itens",
     text: "Parâmetros",
     headerStyle: { backgroundColor: '#bee5eb' },
-    // formatter: (rowContent, row) => {
 
-    //   var htmlParametros = row.Itens;
-    //   var cleanText = htmlParametros.replaceAll(/<\/?[^>]+(>|$)/g, "");
-    //   cleanText = cleanText.replaceAll("&#58;", "");
-    //   cleanText = cleanText.replaceAll("-&gt;", "");
-    //   //console.log("cleanText",cleanText);
-
-    //   return cleanText;
-    // }
     formatter: (rowContent, row) => {
 
       return <div dangerouslySetInnerHTML={{ __html: `${row.Itens}` }} />;
@@ -411,110 +485,166 @@ const tablecolumnsSetupBios = [
     text: "",
     headerStyle: { "backgroundColor": "#bee5eb", "width": "210px" },
     formatter: (rowContent, row) => {
+
       var id = row.ID;
 
-      return (
-        <>
-          <button onClick={async () => {
+      var mostraBotao = false;
 
-            if (confirm("Deseja realmente excluir o Setup de BIOS: " + row.Title + "?") == true) {
+      if (_status == "Em elaboração (Engenharia)") {
 
-              const list = _web.lists.getByTitle("Setup de BIOS");
-              await list.items.getById(id).recycle()
-                .then(async response => {
+        if (_grupos.indexOf("DIPS - Engenharia (Elaborador)") !== -1) {
 
-                  var texto = `O item ${row.Title} foi eliminado da lista Setup de BIOS`
+          mostraBotao = true;
 
-                  await _web.lists
-                    .getByTitle("Reprovações do Suporte")
-                    .items.add({
-                      Title: texto,
-                      DIPSId: _documentoID,
-                      VersaoReprovada: _versao.toString(),
-                      StatusAnterior: "Item eliminado",
-                      StatusAtual: _status
-                    })
-                    .then(response => {
+        }
 
-                      console.log("Item excluido!");
-                      jQuery("#modalSucessoExcluirSetupBIOS").modal({ backdrop: 'static', keyboard: false });
+      }
 
-                    })
-                    .catch((error: any) => {
-                      console.log(error);
-                    })
+      else if (_status == "Em revisão (Engenharia)") {
+
+        if (_grupos.indexOf("DIPS - Engenharia (Elaborador)") !== -1) {
+
+          mostraBotao = true;
+
+        }
+
+      }
+
+      else if (_status == "Em revisão (Suporte)") {
+
+        if (_grupos.indexOf("DIPS - Suporte") !== -1) {
+
+          mostraBotao = true;
+
+        }
+
+      }
+
+
+      if (mostraBotao) {
+
+        return (
+          <>
+            <button onClick={async () => {
+
+              if (confirm("Deseja realmente excluir o Setup de BIOS: " + row.Title + "?") == true) {
+
+                const list = _web.lists.getByTitle("Setup de BIOS");
+                await list.items.getById(id).recycle()
+                  .then(async response => {
+
+                    var texto = `O item ${row.Title} foi eliminado da lista Setup de BIOS`
+
+                    await _web.lists
+                      .getByTitle("Reprovações do Suporte")
+                      .items.add({
+                        Title: texto,
+                        DIPSId: _documentoID,
+                        VersaoReprovada: _versao.toString(),
+                        StatusAnterior: "Item eliminado",
+                        StatusAtual: _status
+                      })
+                      .then(response => {
+
+                        console.log("Item excluido!");
+                        jQuery("#modalSucessoExcluirSetupBIOS").modal({ backdrop: 'static', keyboard: false });
+
+                      })
+                      .catch((error: any) => {
+                        console.log(error);
+                      })
 
 
 
-                })
-                .catch((error: any) => {
-                  console.log(error);
+                  })
+                  .catch((error: any) => {
+                    console.log(error);
 
-                })
+                  })
 
-            } else {
+              } else {
 
-              return false.valueOf;
-            }
+                return false.valueOf;
+              }
 
-          }} className="btn btn-info btnCustom btn-sm">Excluir</button>&nbsp;
-          <button onClick={() => {
+            }} className="btn btn-info btnCustom btn-sm btnEdicaoListas">Excluir</button>&nbsp;
+            <button onClick={() => {
 
-            jQuery('#txtSetupBIOSID').val(row.ID);
-            jQuery('#txtItensSetupBIOSEditar').val(row.Title);
-            jQuery('#txtParametrosSetupBIOSEditar').val(row.Itens);
+              jQuery('#txtSetupBIOSID').val(row.ID);
+              jQuery('#txtItensSetupBIOSEditar').val(row.Title);
+              jQuery('#txtParametrosSetupBIOSEditar').val(row.Itens);
 
-            var parametros = row.Itens;
-            console.log("parametros", parametros);
+              var parametros = row.Itens;
 
-            var txtParametros = "";
+              var txtParametros = "";
 
-            console.log("parametros", parametros);
+              if (parametros != null) {
 
-            if (parametros != null) {
+                txtParametros = parametros.replace(/<[\/]{0,1}(div)[^><]*>/g, "");
+                console.log("txtParametros", txtParametros);
 
-              txtParametros = parametros.replace(/<[\/]{0,1}(div)[^><]*>/g, "");
-              console.log("txtParametros", txtParametros);
+                if (txtParametros.includes("<font")) {
 
-              if (txtParametros.includes("<font")) {
+                  txtParametros = txtParametros.replace("font", "span");
+                  txtParametros = txtParametros.replace("font", "span");
 
-                txtParametros = txtParametros.replace("font", "span");
-                txtParametros = txtParametros.replace("font", "span");
+                }
+
+                if (txtParametros.includes("color")) {
+
+                  txtParametros = txtParametros.replace('color="', 'style="color:');
+
+                }
+
+                txtParametros = txtParametros.trim();
 
               }
 
-              if (txtParametros.includes("color")) {
+              jQuery('#RichTextParametrosSetupBIOSEditar').find('.ql-editor').html(`${txtParametros}`);
 
-                txtParametros = txtParametros.replace('color="', 'style="color:');
+              _setupBIOSParametrosEditar = parametros;
 
-              }
+              jQuery("#modalEditarSetupBIOS").modal({ backdrop: 'static', keyboard: false })
 
+            }} className="btn btn-info btnCustom btn-sm btnEdicaoListas">Editar</button>&nbsp;
 
-            }
+            <button onClick={() => {
 
-            jQuery('#RichTextParametrosSetupBIOSEditar').find('.ql-editor').html(`${txtParametros.trim()}`);
+              var dataCriacao = new Date(row.Created);
+              var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
 
-            _setupBIOSParametrosEditar = parametros;
+              jQuery('#txtItensBIOS').html(row.Title);
+              jQuery('#txtParametrosBIOS').html(row.Itens);
+              jQuery('#txtCriadoSetupBIOS').html(dtdataCriacao);
+              jQuery('#txtCriadoPorSetupBIOS').html(row.Author.Title);
+              jQuery("#modalDetalhesSetupBIOS").modal({ backdrop: 'static', keyboard: false })
 
-            jQuery("#modalEditarSetupBIOS").modal({ backdrop: 'static', keyboard: false })
+            }} className="btn btn-info btnCustom btn-sm">Detalhes</button>
 
-          }} className="btn btn-info btnCustom btn-sm">Editar</button>&nbsp;
+          </>
+        )
+      }
+      else {
 
-          <button onClick={() => {
+        return (
+          <>
+            <button onClick={() => {
 
-            var dataCriacao = new Date(row.Created);
-            var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
+              var dataCriacao = new Date(row.Created);
+              var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
 
-            jQuery('#txtItensBIOS').html(row.Title);
-            jQuery('#txtParametrosBIOS').html(row.Itens);
-            jQuery('#txtCriadoSetupBIOS').html(dtdataCriacao);
-            jQuery('#txtCriadoPorSetupBIOS').html(row.Author.Title);
-            jQuery("#modalDetalhesSetupBIOS").modal({ backdrop: 'static', keyboard: false })
+              jQuery('#txtItensBIOS').html(row.Title);
+              jQuery('#txtParametrosBIOS').html(row.Itens);
+              jQuery('#txtCriadoSetupBIOS').html(dtdataCriacao);
+              jQuery('#txtCriadoPorSetupBIOS').html(row.Author.Title);
+              jQuery("#modalDetalhesSetupBIOS").modal({ backdrop: 'static', keyboard: false })
 
-          }} className="btn btn-info btnCustom btn-sm">Detalhes</button>
+            }} className="btn btn-info btnCustom btn-sm">Detalhes</button>
 
-        </>
-      )
+          </>
+        )
+
+      }
 
     }
   }
@@ -561,6 +691,40 @@ const tablecolumnsSetupitensModulos = [
 
       var id = row.ID;
 
+      var mostraBotao = false;
+
+      if (_status == "Em elaboração (Engenharia)") {
+
+        if (_grupos.indexOf("DIPS - Engenharia (Elaborador)") !== -1) {
+
+          mostraBotao = true;
+
+        }
+
+      }
+
+      else if (_status == "Em revisão (Engenharia)") {
+
+        if (_grupos.indexOf("DIPS - Engenharia (Elaborador)") !== -1) {
+
+          mostraBotao = true;
+
+        }
+
+      }
+
+      else if (_status == "Em revisão (Suporte)") {
+
+        if (_grupos.indexOf("DIPS - Suporte") !== -1) {
+
+          mostraBotao = true;
+
+        }
+
+      }
+
+      if(mostraBotao){
+
       return (
         <>
           <button onClick={async () => {
@@ -604,7 +768,7 @@ const tablecolumnsSetupitensModulos = [
               return false.valueOf;
             }
 
-          }} className="btn btn-info btnCustom btn-sm">Excluir</button>&nbsp;
+          }} className="btn btn-info btnCustom btn-sm btnEdicaoListas">Excluir</button>&nbsp;
           <button onClick={() => {
 
             jQuery('#txtModulosID').val(row.ID);
@@ -634,16 +798,18 @@ const tablecolumnsSetupitensModulos = [
 
               }
 
+              txtParametros = txtParametros.trim();
+
             }
 
-            jQuery('#RichTextParametrosModulosEditar').find('.ql-editor').html(`${txtParametros.trim()}`);
+            jQuery('#RichTextParametrosModulosEditar').find('.ql-editor').html(`${txtParametros}`);
 
 
             _modulosParametros = parametros;
 
             jQuery("#modalEditarModulos").modal({ backdrop: 'static', keyboard: false })
 
-          }} className="btn btn-info btnCustom btn-sm">Editar</button>&nbsp;
+          }} className="btn btn-info btnCustom btn-sm btnEdicaoListas">Editar</button>&nbsp;
 
           <button onClick={() => {
 
@@ -659,7 +825,30 @@ const tablecolumnsSetupitensModulos = [
           }} className="btn btn-info btnCustom btn-sm">Detalhes</button>
 
         </>
-      )
+      )}
+
+      else{
+
+        return (
+          <>
+
+            <button onClick={() => {
+  
+              var dataCriacao = new Date(row.Created);
+              var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
+  
+              jQuery('#txtParametrosModulo').html(row.Parametros);
+              jQuery('#txtItensModulos').html(row.Title);
+              jQuery('#txtCriadoModulos').html(dtdataCriacao);
+              jQuery('#txtCriadoPorModulos').html(row.Author.Title);
+              jQuery("#modalDetalhesModulos").modal({ backdrop: 'static', keyboard: false })
+  
+            }} className="btn btn-info btnCustom btn-sm">Detalhes</button>
+  
+          </>
+        )
+
+      }
 
     }
   }
@@ -709,105 +898,163 @@ const tablecolumnsCheckList = [
     headerStyle: { "backgroundColor": "#bee5eb", "width": "210px" },
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
+
       var id = row.ID;
 
-      return (
-        <>
-          <button onClick={async () => {
+      var mostraBotao = false;
 
-            if (confirm("Deseja realmente excluir o Checklist: " + row.Title + "?") == true) {
+      if (_status == "Em elaboração (Engenharia)") {
 
-              const list = _web.lists.getByTitle("Checklist");
-              await list.items.getById(id).recycle()
-                .then(async response => {
+        if (_grupos.indexOf("DIPS - Engenharia (Elaborador)") !== -1) {
 
-                  var texto = `O item ${row.Title} foi eliminado da lista Checklist`
+          mostraBotao = true;
 
-                  await _web.lists
-                    .getByTitle("Reprovações do Suporte")
-                    .items.add({
-                      Title: texto,
-                      DIPSId: _documentoID,
-                      VersaoReprovada: _versao.toString(),
-                      StatusAnterior: "Item eliminado",
-                      StatusAtual: _status
-                    })
-                    .then(response => {
+        }
 
-                      console.log("Item excluido!");
-                      jQuery("#modalSucessoExcluirCheckList").modal({ backdrop: 'static', keyboard: false });
+      }
 
-                    })
-                    .catch((error: any) => {
-                      console.log(error);
-                    })
+      else if (_status == "Em revisão (Engenharia)") {
+
+        if (_grupos.indexOf("DIPS - Engenharia (Elaborador)") !== -1) {
+
+          mostraBotao = true;
+
+        }
+
+      }
+
+      else if (_status == "Em revisão (Suporte)") {
+
+        if (_grupos.indexOf("DIPS - Suporte") !== -1) {
+
+          mostraBotao = true;
+
+        }
+
+      }
+
+
+      if (mostraBotao) {
+        return (
+          <>
+            <button onClick={async () => {
+
+              if (confirm("Deseja realmente excluir o Checklist: " + row.Title + "?") == true) {
+
+                const list = _web.lists.getByTitle("Checklist");
+                await list.items.getById(id).recycle()
+                  .then(async response => {
+
+                    var texto = `O item ${row.Title} foi eliminado da lista Checklist`
+
+                    await _web.lists
+                      .getByTitle("Reprovações do Suporte")
+                      .items.add({
+                        Title: texto,
+                        DIPSId: _documentoID,
+                        VersaoReprovada: _versao.toString(),
+                        StatusAnterior: "Item eliminado",
+                        StatusAtual: _status
+                      })
+                      .then(response => {
+
+                        console.log("Item excluido!");
+                        jQuery("#modalSucessoExcluirCheckList").modal({ backdrop: 'static', keyboard: false });
+
+                      })
+                      .catch((error: any) => {
+                        console.log(error);
+                      })
 
 
 
-                })
-                .catch((error: any) => {
-                  console.log(error);
+                  })
+                  .catch((error: any) => {
+                    console.log(error);
 
-                })
+                  })
 
-            } else {
+              } else {
 
-              return false.valueOf;
-            }
+                return false.valueOf;
+              }
 
-          }} className="btn btn-info btnCustom btn-sm">Excluir</button>&nbsp;
-          <button onClick={() => {
+            }} className="btn btn-info btnCustom btn-sm btnEdicaoListas">Excluir</button>&nbsp;
+            <button onClick={() => {
 
-            jQuery('#txtCheckListID').val(row.ID);
-            jQuery('#txtSNEditarCheckList').val(row.Title);
-            jQuery('#txtParametrosSetupBIOSEditar').val(row.Itens);
+              jQuery('#txtCheckListID').val(row.ID);
+              jQuery('#txtSNEditarCheckList').val(row.Title);
+              jQuery('#txtParametrosSetupBIOSEditar').val(row.Itens);
 
-            var divergencias = row.Divergencias;
-            var txtDivergencias = "";
+              var divergencias = row.Divergencias;
+              var txtDivergencias = "";
 
-            console.log("divergencias", divergencias);
+              console.log("divergencias", divergencias);
 
-            if (divergencias != null) {
+              if (divergencias != null) {
 
-              txtDivergencias = divergencias.replace(/<[\/]{0,1}(div)[^><]*>/g, "");
-              console.log("txtParametros", txtDivergencias);
+                txtDivergencias = divergencias.replace(/<[\/]{0,1}(div)[^><]*>/g, "");
+                console.log("txtParametros", txtDivergencias);
 
-              if (txtDivergencias.includes("<font")) {
+                if (txtDivergencias.includes("<font")) {
 
-                txtDivergencias = txtDivergencias.replace("font", "span");
-                txtDivergencias = txtDivergencias.replace("font", "span");
+                  txtDivergencias = txtDivergencias.replace("font", "span");
+                  txtDivergencias = txtDivergencias.replace("font", "span");
+
+                }
+
+                if (txtDivergencias.includes("color")) {
+
+                  txtDivergencias = txtDivergencias.replace('color="', 'style="color:');
+
+                }
+
+                txtDivergencias = txtDivergencias.trim();
 
               }
 
-              if (txtDivergencias.includes("color")) {
+              jQuery('#RichTextCheckListEditar').find('.ql-editor').html(`${txtDivergencias}`);
 
-                txtDivergencias = txtDivergencias.replace('color="', 'style="color:');
+              jQuery("#modalEditarCheckList").modal({ backdrop: 'static', keyboard: false })
 
-              }
+            }} className="btn btn-info btnCustom btn-sm btnEdicaoListas">Editar</button>&nbsp;
 
-            }
+            <button onClick={() => {
 
-            jQuery('#RichTextCheckListEditar').find('.ql-editor').html(`${txtDivergencias.trim()}`);
+              var dataCriacao = new Date(row.Created);
+              var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
 
-            jQuery("#modalEditarCheckList").modal({ backdrop: 'static', keyboard: false })
+              jQuery('#txtSN').html(row.Title);
+              jQuery('#txtDivergencias').html(row.Divergencias);
+              jQuery('#txtCriadoCheckList').html(dtdataCriacao);
+              jQuery('#txtCriadoPorCheckList').html(row.Author.Title);
+              jQuery("#modalDetalhesCheckList").modal({ backdrop: 'static', keyboard: false })
 
-          }} className="btn btn-info btnCustom btn-sm">Editar</button>&nbsp;
+            }} className="btn btn-info btnCustom btn-sm">Detalhes</button>
 
-          <button onClick={() => {
+          </>
+        )
+      } else {
 
-            var dataCriacao = new Date(row.Created);
-            var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
+        return (
+          <>
+            <button onClick={() => {
 
-            jQuery('#txtSN').html(row.Title);
-            jQuery('#txtDivergencias').html(row.Divergencias);
-            jQuery('#txtCriadoCheckList').html(dtdataCriacao);
-            jQuery('#txtCriadoPorCheckList').html(row.Author.Title);
-            jQuery("#modalDetalhesCheckList").modal({ backdrop: 'static', keyboard: false })
+              var dataCriacao = new Date(row.Created);
+              var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
 
-          }} className="btn btn-info btnCustom btn-sm">Detalhes</button>
+              jQuery('#txtSN').html(row.Title);
+              jQuery('#txtDivergencias').html(row.Divergencias);
+              jQuery('#txtCriadoCheckList').html(dtdataCriacao);
+              jQuery('#txtCriadoPorCheckList').html(row.Author.Title);
+              jQuery("#modalDetalhesCheckList").modal({ backdrop: 'static', keyboard: false })
 
-        </>
-      )
+            }} className="btn btn-info btnCustom btn-sm">Detalhes</button>
+
+          </>
+        )
+
+      }
 
     }
   }
@@ -983,10 +1230,6 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
       .getElementById("btnSucessoExcluirPreStage")
       .addEventListener("click", (e: Event) => this.fecharSucessoPreStage());
 
-    // document
-    //   .getElementById("btnSucessoExcluirSetupBIOS")
-    //   .addEventListener("click", (e: Event) => this.fecharSucessoSetupBIOS());
-
     document
       .getElementById("btnSucessoExcluirSetupBIOS")
       .addEventListener("click", (e: Event) => this.fecharSucessoSetupBIOS());
@@ -1075,9 +1318,47 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
       .getElementById("btnVoltar")
       .addEventListener("click", (e: Event) => this.voltar());
 
-    // document
-    //   .getElementById("btnSucessoExcluirPreStage")
-    //   .addEventListener("click", (e: Event) => this.fecharSucessoPreStage());
+      document
+      .getElementById("headingInformacoesProduto")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingInformacoesProduto", "iconUpInformacoesProduto", "iconDownInformacoesProduto"));
+
+    document
+      .getElementById("headingPreStageSoftware")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingPreStageSoftware", "iconUpPreStage", "iconDownPreStage"));
+
+    document
+      .getElementById("headingAnexos")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingAnexos", "iconUpImagens", "iconDownImagens"));
+
+    document
+      .getElementById("headingArquivos")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingArquivos", "iconUpArquivos", "iconDownArquivos"));
+
+      document
+      .getElementById("headingAnexar")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingAnexar", "iconUpAnexarArquivos", "iconDownAnexarArquivos"));
+
+
+    document
+      .getElementById("headingPreStageHardware")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingPreStageHardware", "iconUpPreStageHardware", "iconDownPreStageHardware"));
+
+    document
+      .getElementById("headingSetupBios")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingSetupBios", "iconUpSetupBios", "iconDownSetupBios"));
+
+    document
+      .getElementById("headingSetupItensModulos")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingSetupItensModulos", "iconUpModulos", "iconDownModulos"));
+
+    document
+      .getElementById("headingCheckList")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingCheckList", "iconUpCheckList", "iconDownCheckList",));
+
+    document
+      .getElementById("headingAcoes")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingFluxoAprovacaoDIPS", "iconUpAcoes", "iconDownAcoes"));
+
 
     _web = new Web(this.props.context.pageContext.web.absoluteUrl);
     _caminho = this.props.context.pageContext.web.serverRelativeUrl;
@@ -1131,7 +1412,13 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     jQuery("#divMotivoAprovacao").hide();
     jQuery("#cardAnexar").hide();
 
-    this.getDocumento();
+    jQuery("#btnAbrirModalCadastrarPreStage").hide();
+    jQuery("#btnAbrirModalCadastrarPreStageEmLote").hide();
+    jQuery("#btnAbrirModalCadastrarSetupBIOS").hide();
+    jQuery("#btnAbrirModalCadastrarModulos").hide();
+    jQuery("#btnAbrirModalCadastrarCheckList").hide();
+
+      this.getDocumento();
     this.getImagens();
     this.handler();
 
@@ -1156,6 +1443,12 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             <div className="card-header btn" id="headingInformacoesProduto" data-toggle="collapse" data-target="#collapseInformacoesProduto" aria-expanded="true" aria-controls="collapseInformacoesProduto">
               <h5 className="mb-0 text-info">
                 Informações do produto
+                <span id='iconDownInformacoesProduto' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpInformacoesProduto' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseInformacoesProduto" className="collapse show" aria-labelledby="headingOne">
@@ -1269,6 +1562,12 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             <div className="card-header btn" id="headingPreStageSoftware" data-toggle="collapse" data-target="#collapsePreStageSoftware" aria-expanded="true" aria-controls="collapsePreStageSoftware">
               <h5 className="mb-0 text-info">
                 Pré Stage de Software
+                <span id='iconDownPreStage' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpPreStage' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapsePreStageSoftware" className="collapse show" aria-labelledby="headingOne">
@@ -1360,6 +1659,12 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             <div className="card-header btn" id="headingAnexos" data-toggle="collapse" data-target="#collapseAnexos" aria-expanded="true" aria-controls="collapseAnexos">
               <h5 className="mb-0 text-info">
                 Imagens
+                <span id='iconDownImagens' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpImagens' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseAnexos" className="collapse show" aria-labelledby="headingOne">
@@ -1369,8 +1674,6 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
                   <div className="form-row ">
                     <div className="form-group col-md" >
                       {this.state.itemsListImagensItem.map((item, key) => {
-
-                        // console.log("item anexos", item);
 
                         var checkNomeArquivoJPG = false;
                         var checkNomeArquivojpg = false;
@@ -1414,7 +1717,6 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
                       })}
                       {this.state.itemsListImagens.map((item, key) => {
 
-                        // console.log("item anexos", item);
 
                         var checkNomeArquivoJPG = false;
                         var checkNomeArquivojpg = false;
@@ -1475,6 +1777,12 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             <div className="card-header btn" id="headingArquivos" data-toggle="collapse" data-target="#collapseArquivos" aria-expanded="true" aria-controls="collapseArquivos">
               <h5 className="mb-0 text-info">
                 Arquivos
+                <span id='iconDownArquivos' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpArquivos' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseArquivos" className="collapse show" aria-labelledby="headingOne">
@@ -1484,8 +1792,6 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
                   <div className="form-row ">
                     <div className="form-group col-md" >
                       {this.state.itemsListImagensItem.map((item, key) => {
-
-                        // console.log("item anexos", item);
 
                         var checkNomeArquivoJPG = false;
                         var checkNomeArquivojpg = false;
@@ -1527,8 +1833,6 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
                       })}
                       {this.state.itemsListImagens.map((item, key) => {
-
-                        // console.log("item anexos", item);
 
                         var checkNomeArquivoJPG = false;
                         var checkNomeArquivojpg = false;
@@ -1586,6 +1890,12 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             <div className="card-header btn" id="headingAnexar" data-toggle="collapse" data-target="#collapseAnexar" aria-expanded="true" aria-controls="collapseAnexar">
               <h5 className="mb-0 text-info">
                 Anexar imagens/arquivos
+                <span id='iconDownAnexarArquivos' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpAnexarArquivos' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseAnexar" className="collapse show" aria-labelledby="headingOne">
@@ -1613,12 +1923,18 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             <div className="card-header btn" id="headingPreStageHardware" data-toggle="collapse" data-target="#collapsePreStageHardware" aria-expanded="true" aria-controls="collapsePreStageHardware">
               <h5 className="mb-0 text-info">
                 Pre Stage de Hardware
+                <span id='iconDownPreStageHardware' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpPreStageHardware' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapsePreStageHardware" className="collapse show" aria-labelledby="headingOne">
               <div className="card-body">
                 <div id='tabelaPreStageSoftware'>
-                  <BootstrapTable bootstrap4 responsive condensed hover={true} className="gridTodosItens" id="gridTodosItensPreStageSoftware" keyField='id' data={this.state.itemsListPreStageSoftware} columns={tablecolumnsPreStageSoftware} headerClasses="header-class" />
+                  <BootstrapTable bootstrap4 striped responsive condensed hover={false} className="gridTodosItens" id="gridTodosItensPreStageSoftware" keyField='id' data={this.state.itemsListPreStageSoftware} columns={tablecolumnsPreStageSoftware} headerClasses="header-class" />
 
                 </div>
                 <button id='btnAbrirModalCadastrarPreStage' className="btn btn-secondary btnCustom btn-sm">Adicionar</button>&nbsp;
@@ -1632,12 +1948,18 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             <div className="card-header btn" id="headingSetupBios" data-toggle="collapse" data-target="#collapseSetupBios" aria-expanded="true" aria-controls="collapseSetupBios">
               <h5 className="mb-0 text-info">
                 Setup de BIOS
+                <span id='iconDownSetupBios' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpSetupBios' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseSetupBios" className="collapse show" aria-labelledby="headingOne">
               <div className="card-body">
                 <div id='tabelaSetupBios'>
-                  <BootstrapTable bootstrap4 responsive condensed hover={true} className="gridTodosItens" id="gridTodosItensSetupBios" keyField='id' data={this.state.itemsListSetupBios} columns={tablecolumnsSetupBios} headerClasses="header-class" />
+                  <BootstrapTable bootstrap4 striped responsive condensed hover={false} className="gridTodosItens" id="gridTodosItensSetupBios" keyField='id' data={this.state.itemsListSetupBios} columns={tablecolumnsSetupBios} headerClasses="header-class" />
                 </div>
                 <button id='btnAbrirModalCadastrarSetupBIOS' className="btn btn-secondary btnCustom btn-sm">Adicionar</button>
               </div>
@@ -1648,12 +1970,18 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             <div className="card-header btn" id="headingSetupItensModulos" data-toggle="collapse" data-target="#collapseSetupItensModulos" aria-expanded="true" aria-controls="collapseSetupItensModulos">
               <h5 className="mb-0 text-info">
                 Setup de Itens/Módulos
+                <span id='iconDownModulos' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpModulos' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseSetupItensModulos" className="collapse show" aria-labelledby="headingOne">
               <div className="card-body">
                 <div id='tabelaSetupItensModulos'>
-                  <BootstrapTable bootstrap4 responsive condensed hover={true} className="gridTodosItens" id="gridTodosItensSetupItensModulos" keyField='id' data={this.state.itemsSetupItensModulos} columns={tablecolumnsSetupitensModulos} headerClasses="header-class" />
+                  <BootstrapTable bootstrap4 striped responsive condensed hover={false} className="gridTodosItens" id="gridTodosItensSetupItensModulos" keyField='id' data={this.state.itemsSetupItensModulos} columns={tablecolumnsSetupitensModulos} headerClasses="header-class" />
                 </div>
                 <button id='btnAbrirModalCadastrarModulos' className="btn btn-secondary btnCustom btn-sm">Adicionar</button>
               </div>
@@ -1664,12 +1992,18 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             <div className="card-header btn" id="headingCheckList" data-toggle="collapse" data-target="#collapseCheckList" aria-expanded="true" aria-controls="collapseCheckList">
               <h5 className="mb-0 text-info">
                 Checklist
+                <span id='iconDownCheckList' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpCheckList' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseCheckList" className="collapse show" aria-labelledby="headingOne">
               <div className="card-body">
                 <div id='tabelaCheckList'>
-                  <BootstrapTable bootstrap4 responsive condensed hover={true} className="gridTodosItens" id="gridTodosItensCheckList" keyField='id' data={this.state.itemsCheckList} columns={tablecolumnsCheckList} headerClasses="header-class" />
+                  <BootstrapTable bootstrap4 striped responsive condensed hover={false} className="gridTodosItens" id="gridTodosItensCheckList" keyField='id' data={this.state.itemsCheckList} columns={tablecolumnsCheckList} headerClasses="header-class" />
                 </div>
                 <button id='btnAbrirModalCadastrarCheckList' className="btn btn-secondary btnCustom btn-sm">Adicionar</button>
               </div>
@@ -1680,6 +2014,12 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             <div className="card-header btn" id="headingAcoes" data-toggle="collapse" data-target="#collapseAcoes" aria-expanded="true" aria-controls="collapseAcoes">
               <h5 className="mb-0 text-info">
                 Ações
+                <span id='iconDownAcoes' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpAcoes' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseAcoes" className="collapse show" aria-labelledby="headingOne">
@@ -3067,6 +3407,12 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
                 jQuery("#btnValidarSalvar").show();
                 jQuery("#btnValidarAprovacaoSuporte").show();
 
+                jQuery("#btnAbrirModalCadastrarPreStage").show();
+                jQuery("#btnAbrirModalCadastrarPreStageEmLote").show();
+                jQuery("#btnAbrirModalCadastrarSetupBIOS").show();
+                jQuery("#btnAbrirModalCadastrarModulos").show();
+                jQuery("#btnAbrirModalCadastrarCheckList").show();
+
               }
 
             }
@@ -3098,6 +3444,12 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
                 jQuery("#btnValidarSalvar").show();
                 jQuery("#btnValidarAprovacaoSuporte").show();
 
+                jQuery("#btnAbrirModalCadastrarPreStage").show();
+                jQuery("#btnAbrirModalCadastrarPreStageEmLote").show();
+                jQuery("#btnAbrirModalCadastrarSetupBIOS").show();
+                jQuery("#btnAbrirModalCadastrarModulos").show();
+                jQuery("#btnAbrirModalCadastrarCheckList").show();
+
               }
 
             }
@@ -3120,6 +3472,13 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
                 jQuery("#btnValidarAprovar").show();
                 jQuery("#divMotivoAprovacao").show();
+                jQuery("#btnValidarSalvar").show();
+
+                jQuery("#btnAbrirModalCadastrarPreStage").show();
+                jQuery("#btnAbrirModalCadastrarPreStageEmLote").show();
+                jQuery("#btnAbrirModalCadastrarSetupBIOS").show();
+                jQuery("#btnAbrirModalCadastrarModulos").show();
+                jQuery("#btnAbrirModalCadastrarCheckList").show();
 
               }
 
@@ -3189,7 +3548,6 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
                   }
 
                 }
-                console.log("sistemaOperacional", sistemaOperacional);
 
                 if (arrSistemaOperacional.indexOf(sistemaOperacional) == -1) {
                   console.log("entrou");
@@ -3199,8 +3557,6 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
                   jQuery('#divSistemaOperacionalOutros').show();
                 }
 
-
-                console.log("sistemaOperacional2", sistemaOperacional);
 
                 this.setState({
                   valorItemsCliente: cliente,
@@ -3220,7 +3576,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
             var outrasInformacoes = resultData.d.results[i].OutrasInformacoes;
             var cleanOutrasInformacoes = "";
-            var txtOutrasInformacoes;
+            var txtOutrasInformacoes = "";
 
 
             if (outrasInformacoes != null) {
@@ -3241,9 +3597,11 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
               }
 
+              txtOutrasInformacoes = txtOutrasInformacoes.trim();
+
             }
 
-            jQuery('#richTextOutrasInformacoes').find('.ql-editor').html(`${txtOutrasInformacoes.trim()}`);
+            jQuery('#richTextOutrasInformacoes').find('.ql-editor').html(`${txtOutrasInformacoes}`);
 
 
             _pacoteAdicionalSO = pacoteAdicionalSO;
@@ -3321,10 +3679,6 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             }
 
 
-
-            console.log("_instalacaoMidiaMatriz", _instalacaoMidiaMatriz);
-            //console.log("_instalacaoMidiaMatriz",_instalacaoMidiaMatriz);
-
             if (_instalacaoMidiaMatriz == null) {
               _instalacaoMidiaMatrizAtual = []
             } else {
@@ -3332,12 +3686,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             }
 
 
-
-            // if (_pacoteAdicionalSO == null) {
-            //  _pacoteAdicionalSOAtual = ""
-            //   } else {
             _pacoteAdicionalSOAtual = _pacoteAdicionalSO;
-            //   }
+
 
             if (midiaMatriz == null) {
               _midiaMatrizAtual = ""
@@ -3346,8 +3696,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             }
 
             _sistemaOperacionalAtual = sistemaOperacional;
-            _outrasInformacoesatual = cleanOutrasInformacoes;
-
+            _outrasInformacoesatual = txtOutrasInformacoes;
 
 
           }
@@ -3375,10 +3724,11 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
   }
 
 
-  protected getImagens() {
+  protected async getImagens() {
 
     var montaImagem = "";
     var montaOutros = "";
+
     var url = `${this.props.siteurl}/_api/web/lists/getByTitle('Documentos')/items('${_documentoID}')/AttachmentFiles`;
     var _url = this.props.siteurl;
     // console.log("url", url);
@@ -3387,6 +3737,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
       ({
         url: url,
         method: "GET",
+        async: false,
         headers:
         {
           // Accept header: Specifies the format for response data from the server.
@@ -3396,49 +3747,11 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
           var dataresults = resultData.d.results;
 
-          // _testeGus = data.d.results;
-
-          // console.log("dataresults item", dataresults);
-
           var reactHandler = this;
 
           reactHandler.setState({
             itemsListImagensItem: dataresults
           });
-
-          // for (var i = 0; i < dataresults.length; i++) {
-
-          //   var checkNomeArquivoJPG = false;
-          //   var checkNomeArquivojpg = false;
-          //   var checkNomeArquivoPNG = false;
-          //   var checkNomeArquivopng = false;
-          //   var checkNomeArquivoGIF = false;
-          //   var checkNomeArquivogif = false;
-
-          //   var nomeArquivo = dataresults[i]["FileName"];
-
-          //   checkNomeArquivoJPG = nomeArquivo.includes(".JPG");
-          //   checkNomeArquivojpg = nomeArquivo.includes(".jpg");
-          //   checkNomeArquivoPNG = nomeArquivo.includes(".PNG");
-          //   checkNomeArquivopng = nomeArquivo.includes(".png");
-          //   checkNomeArquivoGIF = nomeArquivo.includes(".GIF");
-          //   checkNomeArquivogif = nomeArquivo.includes(".gif");
-
-          //   if ((checkNomeArquivoJPG) || (checkNomeArquivojpg) || (checkNomeArquivoPNG) || (checkNomeArquivopng) || (checkNomeArquivoGIF) || (checkNomeArquivogif)) {
-
-          //     montaImagem += `<img class='imagensDIPS' src='${_url}/Lists/Documentos/Attachments/${_documentoID}/${dataresults[i]["FileName"]}'></img><br/><br/>`;
-
-          //   } else {
-
-          //     montaOutros += `<a target ="_blank" data-interception="off" title="" href="${_url}/Lists/Documentos/Attachments/${_documentoID}/${dataresults[i]["FileName"]}">${dataresults[i]["FileName"]}</a><br/>`;
-          //   }
-
-
-          // }
-
-          //  $("#conteudoImagens").append(montaImagem);
-          //   $("#conteudoOutros").append(montaOutros);
-
 
         },
         error: function (xhr, status, error) {
@@ -3451,22 +3764,13 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
     var relativeURL = window.location.pathname;
 
-    //console.log("relativeURL Fotos", relativeURL);
-
     var strRelativeURL = relativeURL.replace("SitePages/Documentos-Editar.aspx", "");
 
-    // console.log("strRelativeURL Fotos", strRelativeURL);
+    await _web.getFolderByServerRelativeUrl(`${strRelativeURL}/Imagens/${_documentoID}`).files.orderBy('TimeLastModified', true)
 
-    _web.getFolderByServerRelativeUrl(`${strRelativeURL}/Imagens/${_documentoID}`).files
       .expand('ListItemAllFields', 'Author').get().then(r => {
 
-        //  console.log("rFotos", r);
-        /*
-        r.Folders.forEach(item => {
-          console.log("item-doc", item);
-        console.log("entrou em folder");
-        })
-        */
+        console.log("r", r);
 
         var reactHandler = this;
 
@@ -3474,56 +3778,15 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
           itemsListImagens: r
         });
 
-
-        // r.forEach(item => {
-
-        //   console.log("entrou");
-
-        //   var checkNomeArquivoJPG = false;
-        //   var checkNomeArquivojpg = false;
-        //   var checkNomeArquivoPNG = false;
-        //   var checkNomeArquivopng = false;
-        //   var checkNomeArquivoGIF = false;
-        //   var checkNomeArquivogif = false;
-
-        //   var nomeArquivo = item.Name;
-
-        //   checkNomeArquivoJPG = nomeArquivo.includes(".JPG");
-        //   checkNomeArquivojpg = nomeArquivo.includes(".jpg");
-        //   checkNomeArquivoPNG = nomeArquivo.includes(".PNG");
-        //   checkNomeArquivopng = nomeArquivo.includes(".png");
-        //   checkNomeArquivoGIF = nomeArquivo.includes(".GIF");
-        //   checkNomeArquivogif = nomeArquivo.includes(".gif");
-
-        //   console.log("item", item);
-        //   if ((checkNomeArquivoJPG) || (checkNomeArquivojpg) || (checkNomeArquivoPNG) || (checkNomeArquivopng) || (checkNomeArquivoGIF) || (checkNomeArquivogif)) {
-
-        //     montaImagem += `<img class='imagensDIPS' src='${item.ServerRelativeUrl}'></img><br/>`;
-
-        //   } else {
-
-        //     montaOutros += `<a data-interception="off" target="_blank" title="" href="${item.ServerRelativeUrl}">${item.Name}</a> <br/>`;
-        //   }
-
-
-        // })
-
-        $("#conteudoImagens").append(montaImagem);
-        $("#conteudoOutros").append(montaOutros);
-
-
       }).catch((error: any) => {
         console.log("Erro onChangeCliente: ", error);
       });
+
+
   }
 
 
   async excluirAnexoItem(ServerRelativeUr, name, elemento, elemento2) {
-
-    // console.log("name", name);
-    // console.log("elemento", elemento);
-    // console.log("elemento2", elemento2);
-
 
     if (confirm("Deseja realmente excluir o arquivo " + name + "?") == true) {
 
@@ -3547,10 +3810,6 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
   async excluirAnexo(ServerRelativeUr, name, elemento, elemento2) {
 
-    // console.log("ServerRelativeUr", ServerRelativeUr);
-    // console.log("name", name);
-    //  console.log("elemento", elemento);
-    // console.log("elemento2", elemento2);
 
     if (confirm("Deseja realmente excluir o arquivo " + name + "?") == true) {
 
@@ -3645,23 +3904,6 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
   }
 
 
-  // protected async excluirPreStageSetupBIOS() {
-
-
-  //   const list = _web.lists.getByTitle("Setup de BIOS");
-  //   await list.items.getById(_idParaExcluir).recycle()
-  //     .then(async response => {
-  //       console.log("Item excluido!");
-  //       jQuery("#modalConfirmarExcluirSetupBIOS").modal('hide');
-  //       jQuery("#modalSucessoExcluirSetupBIOS").modal({ backdrop: 'static', keyboard: false });
-  //     })
-  //     .catch((error: any) => {
-  //       console.log(error);
-
-  //     })
-
-  // }
-
   protected async fecharSucesso() {
 
     $("#modalSucesso").modal('hide');
@@ -3679,57 +3921,6 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     window.location.href = `Documentos-Todos.aspx`;
 
   }
-
-  // protected async excluirPreStage() {
-
-
-  //   const list = _web.lists.getByTitle("Pre Stage de Hardware");
-  //   await list.items.getById(_idParaExcluir).recycle()
-  //     .then(async response => {
-  //       console.log("Item excluido!");
-  //       jQuery("#modalConfirmarExcluirPreStage").modal('hide');
-  //       jQuery("#modalSucessoExcluirPreStage").modal({ backdrop: 'static', keyboard: false });
-  //     })
-  //     .catch((error: any) => {
-  //       console.log(error);
-
-  //     })
-
-  // }
-
-  // protected async excluirModulos() {
-
-
-  //   const list = _web.lists.getByTitle("SetupItensModulos");
-  //   await list.items.getById(_idParaExcluir).recycle()
-  //     .then(async response => {
-  //       console.log("Item excluido!");
-  //       jQuery("#modalConfirmarExcluirModulos").modal('hide');
-  //       jQuery("#modalSucessoExcluirModulos").modal({ backdrop: 'static', keyboard: false });
-  //     })
-  //     .catch((error: any) => {
-  //       console.log(error);
-
-  //     })
-
-  // }
-
-  // protected async excluirCheckList() {
-
-
-  //   const list = _web.lists.getByTitle("SetupItensModulos");
-  //   await list.items.getById(_idParaExcluir).recycle()
-  //     .then(async response => {
-  //       console.log("Item excluido!");
-  //       jQuery("#modalConfirmarExcluirCheckList").modal('hide');
-  //       jQuery("#modalSucessoExcluirCheckList").modal({ backdrop: 'static', keyboard: false });
-  //     })
-  //     .catch((error: any) => {
-  //       console.log(error);
-
-  //     })
-
-  // }
 
   protected fecharSucessoPreStage() {
 
@@ -4204,7 +4395,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
       })
       .then(response => {
 
-        var texto = `O item ${componente} foi foi alterado na lista Pre Stage`
+        var texto = `O item ${componente} foi alterado na lista Pre Stage`
         this.gravaHistoricoAlterarItem(texto, "PreStage");
 
       })
@@ -4251,7 +4442,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
       })
       .then(response => {
 
-        var texto = `O item ${itens} foi foi alterado na lista Setup de BIOS`
+        var texto = `O item ${itens} foi alterado na lista Setup de BIOS`
         this.gravaHistoricoAlterarItem(texto, "SetupBIOS");
 
       })
@@ -4292,7 +4483,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
       })
       .then(response => {
 
-        var texto = `O item ${itens} foi foi alterado na lista Setup de Itens/Módulos`
+        var texto = `O item ${itens} foi alterado na lista Setup de Itens/Módulos`
         this.gravaHistoricoAlterarItem(texto, "Modulos");
 
       })
@@ -4335,7 +4526,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
       })
       .then(response => {
 
-        var texto = `O item ${sn} foi foi alterado na lista Checklist`
+        var texto = `O item ${sn} foi alterado na lista Checklist`
         this.gravaHistoricoAlterarItem(texto, "CheckList");
 
       })
@@ -4482,7 +4673,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
       if (motivo == "") {
 
-        alert("Forneça um motivo para reprovação!");
+        alert("Forneça um motivo para revisão!");
         document.getElementById('headingAcoes').scrollIntoView();
         return false;
 
@@ -4496,7 +4687,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
       if (motivo == "") {
 
-        alert("Forneça um motivo para reprovação!");
+        alert("Forneça um motivo para revisão!");
         document.getElementById('headingAcoes').scrollIntoView();
         return false;
 
@@ -4543,11 +4734,12 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     var responsavelPacoteAdicional = $("#txtResponsavelPacoteAdicional").val();
     var versaoMidiaMatriz = $("#txtVersaoMidiaMatriz").val();
 
-    var dataLiberacaoMidiaMatriz = "" + jQuery("#dtDataLiberacaoMidiaMatriz-label").val() + "";
+    var dataLiberacaoMidiaMatriz = `${jQuery("#dtDataLiberacaoMidiaMatriz-label").val()}`;
     var dataLiberacaoMidiaMatrizDia = dataLiberacaoMidiaMatriz.substring(0, 2);
     var dataLiberacaoMidiaMatrizMes = dataLiberacaoMidiaMatriz.substring(3, 5);
     var dataLiberacaoMidiaMatrizAno = dataLiberacaoMidiaMatriz.substring(6, 10);
     var formDataLiberacaoMidiaMatriz = dataLiberacaoMidiaMatrizAno + "-" + dataLiberacaoMidiaMatrizMes + "-" + dataLiberacaoMidiaMatrizDia;
+    var formDataLiberacaoMidiaMatrizHistorico = dataLiberacaoMidiaMatrizDia + "/" + dataLiberacaoMidiaMatrizMes + "/" + dataLiberacaoMidiaMatrizAno;
 
     if (dataLiberacaoMidiaMatriz == "") formDataLiberacaoMidiaMatriz = null;
 
@@ -4691,17 +4883,34 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
       }
 
       var strDataLiberacaoMidiaMAtriz = "";
+      var validaFormDataLiberacaoMidiaMatriz;
+      var strDataLiberacaoMidiaMAtrizHistorico = "";
+
+      if (formDataLiberacaoMidiaMatriz == null) {
+
+        validaFormDataLiberacaoMidiaMatriz = "";
+
+      }
+      else {
+
+        validaFormDataLiberacaoMidiaMatriz = formDataLiberacaoMidiaMatriz;
+      }
 
       if (_dataLiberacaoMidiaMatriz != null) {
 
         var strDataLiberacaoMidiaMAtriz = _dataLiberacaoMidiaMatriz.getFullYear() + '-' + ("0" + (_dataLiberacaoMidiaMatriz.getMonth() + 1)).slice(-2) + '-' + ("0" + _dataLiberacaoMidiaMatriz.getDate()).slice(-2);
+        var strDataLiberacaoMidiaMAtrizHistorico = ("0" + _dataLiberacaoMidiaMatriz.getDate()).slice(-2) + '/' + ("0" + (_dataLiberacaoMidiaMatriz.getMonth() + 1)).slice(-2) + '/' + _dataLiberacaoMidiaMatriz.getFullYear();
 
       }
 
-      if (strDataLiberacaoMidiaMAtriz != formDataLiberacaoMidiaMatriz) {
-        _arrAlteracoesFormPrincipal.push(`O campo "Data de Liberação (Mídia Matriz)" foi alterado de "${_dataLiberacaoMidiaMatrizAtual}" para "${formDataLiberacaoMidiaMatriz}"`);
-        console.log(`O campo "Data de Liberação (Mídia Matriz)" foi alterado de "${_dataLiberacaoMidiaMatrizAtual}" para "${formDataLiberacaoMidiaMatriz}"`);
+      //console.log("strDataLiberacaoMidiaMAtriz",strDataLiberacaoMidiaMAtriz);
+      //console.log("formDataLiberacaoMidiaMatriz",formDataLiberacaoMidiaMatriz);
+
+      if (strDataLiberacaoMidiaMAtriz != validaFormDataLiberacaoMidiaMatriz) {
+        _arrAlteracoesFormPrincipal.push(`O campo "Data de Liberação (Mídia Matriz)" foi alterado de "${strDataLiberacaoMidiaMAtrizHistorico}" para "${formDataLiberacaoMidiaMatrizHistorico}"`);
+        console.log(`O campo "Data de Liberação (Mídia Matriz)" foi alterado de "${strDataLiberacaoMidiaMAtrizHistorico}" para "${formDataLiberacaoMidiaMatrizHistorico}"`);
       }
+
 
       if (_arquivoInstalacaoMidiaMatrizAtual != arquivoRoteiro) {
         _arrAlteracoesFormPrincipal.push(`O campo "Arquivo de Roteiro para Instalação (Mídia Matriz)" foi alterado de "${_arquivoInstalacaoMidiaMatrizAtual}" para "${arquivoRoteiro}"`);
@@ -4744,9 +4953,9 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
         console.log(`O campo "Mídia Matriz" foi alterado de "${_midiaMatrizAtual}" para "${midiaMatriz}"`);
       }
 
-      if (_sistemaOperacionalAtual != sistemaOperacional) {
-        _arrAlteracoesFormPrincipal.push(`O campo "Sistema Operacional" foi alterado de "${_sistemaOperacionalAtual}" para "${sistemaOperacional}"`);
-        console.log(`O campo "Sistema Operacional" foi alterado de "${_sistemaOperacionalAtual}" para "${sistemaOperacional}"`);
+      if (_sistemaOperacionalAtual != vlrSistemaOpercional) {
+        _arrAlteracoesFormPrincipal.push(`O campo "Sistema Operacional" foi alterado de "${_sistemaOperacionalAtual}" para "${vlrSistemaOpercional}"`);
+        console.log(`O campo "Sistema Operacional" foi alterado de "${_sistemaOperacionalAtual}" para "${vlrSistemaOpercional}"`);
       }
 
       var cleanOutrasInformacoes = ""
@@ -5302,6 +5511,32 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
         // });
       }
     });
+
+  }
+
+
+  protected async mostraOculta(heading, up, down) {
+
+    var val = jQuery(`#${heading}`).attr('aria-expanded');
+
+    console.log("val", val);
+
+    if (val == "true") {
+
+      jQuery(`#${down}`).css("display", "block");
+      jQuery(`#${up}`).css("display", "none");
+
+    }
+    else {
+
+      jQuery(`#${down}`).css("display", "none");
+      jQuery(`#${up}`).css("display", "block");
+
+
+
+    }
+
+
 
   }
 

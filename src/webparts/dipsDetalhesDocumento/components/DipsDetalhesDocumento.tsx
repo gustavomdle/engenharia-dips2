@@ -1,28 +1,21 @@
 import * as React from 'react';
-import styles from './DipsDetalhesDocumento.module.scss';
 import { IDipsDetalhesDocumentoProps } from './IDipsDetalhesDocumentoProps';
-import { escape } from '@microsoft/sp-lodash-subset';
 
-import * as jquery from 'jquery';
 import * as $ from "jquery";
 import * as jQuery from "jquery";
-import { sp, IItemAddResult, DateTimeFieldFormatType } from "@pnp/sp/presets/all";
 import "bootstrap";
 import "@pnp/sp/webs";
 import "@pnp/sp/folders";
 import { Web } from "sp-pnp-js";
-import pnp from "sp-pnp-js";
-import { ICamlQuery } from '@pnp/sp/lists';
-import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
-import { allowOverscrollOnElement, DatePicker } from 'office-ui-fabric-react';
-import { PrimaryButton, Stack, MessageBar, MessageBarType } from 'office-ui-fabric-react';
-import { DateTimePicker, DateConvention, TimeConvention } from '@pnp/spfx-controls-react/lib/DateTimePicker';
-import { RichText } from "@pnp/spfx-controls-react/lib/RichText";
-import { SiteUser } from 'sp-pnp-js/lib/sharepoint/siteusers';
 import { UrlQueryParameterCollection, Version } from '@microsoft/sp-core-library';
 import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+
 
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
@@ -95,8 +88,8 @@ const customFilter = textFilter({
 const tablecolumnsPreStageSoftware = [
   {
     dataField: "Title",
-    text: "Compon.",
-    headerStyle: { "backgroundColor": "#bee5eb" },
+    text: "Componente",
+    headerStyle: { "backgroundColor": "#bee5eb", "width": "100px" },
     classes: 'headerPreStage',
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
@@ -108,7 +101,7 @@ const tablecolumnsPreStageSoftware = [
   {
     dataField: "Modelo",
     text: "Modelo",
-    headerStyle: { "backgroundColor": "#bee5eb" },
+    headerStyle: { "backgroundColor": "#bee5eb", "width": "80px" },
     classes: 'headerPreStage',
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
@@ -120,7 +113,7 @@ const tablecolumnsPreStageSoftware = [
   {
     dataField: "Fabricante",
     text: "Fabricante",
-    headerStyle: { "backgroundColor": "#bee5eb" },
+    headerStyle: { "backgroundColor": "#bee5eb", "width": "90px" },
     classes: 'headerPreStage',
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
@@ -144,7 +137,7 @@ const tablecolumnsPreStageSoftware = [
   {
     dataField: "BIOS",
     text: "BIOS",
-    headerStyle: { "backgroundColor": "#bee5eb" },
+    headerStyle: { "backgroundColor": "#bee5eb", "width": "48px" },
     classes: 'headerPreStage',
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
@@ -156,7 +149,7 @@ const tablecolumnsPreStageSoftware = [
   {
     dataField: "Conexao",
     text: "Conexão",
-    headerStyle: { "backgroundColor": "#bee5eb" },
+    headerStyle: { "backgroundColor": "#bee5eb", "width": "70px" },
     classes: 'headerPreStage',
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
@@ -168,7 +161,7 @@ const tablecolumnsPreStageSoftware = [
   {
     dataField: "PORT",
     text: "PORT",
-    headerStyle: { "backgroundColor": "#bee5eb" },
+    headerStyle: { "backgroundColor": "#bee5eb", "width": "48px"  },
     classes: 'headerPreStage',
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
@@ -180,7 +173,7 @@ const tablecolumnsPreStageSoftware = [
   {
     dataField: "SLOT",
     text: "SLOT",
-    headerStyle: { "backgroundColor": "#bee5eb" },
+    headerStyle: { "backgroundColor": "#bee5eb", "width": "48px"  },
     classes: 'headerPreStage',
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
@@ -192,7 +185,7 @@ const tablecolumnsPreStageSoftware = [
   {
     dataField: "ItemObrigatorio",
     text: "Item obrigatório",
-    headerStyle: { "backgroundColor": "#bee5eb" },
+    headerStyle: { "backgroundColor": "#bee5eb", "width": "90px" },
     classes: 'headerPreStage',
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
@@ -203,13 +196,11 @@ const tablecolumnsPreStageSoftware = [
   },
   {
     dataField: "Observacao",
-    text: "OBS",
-    headerStyle: { "backgroundColor": "#bee5eb" },
+    text: "Observação",
+    headerStyle: { "backgroundColor": "#bee5eb" , "width": "90px" },
     classes: 'headerPreStage',
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
-
-      //console.log("Observacao",row.Observacao);undefined
 
       var valor = row.Observacao;
       if (valor == null) {
@@ -220,7 +211,6 @@ const tablecolumnsPreStageSoftware = [
 
       }
 
-
       return <div dangerouslySetInnerHTML={{ __html: `${valor}` }} />;
 
     }
@@ -228,63 +218,25 @@ const tablecolumnsPreStageSoftware = [
   {
     dataField: "Created",
     text: "Data de criação",
-    headerStyle: { "backgroundColor": "#bee5eb" },
-    classes: 'headerPreStage',
+    headerStyle: { "backgroundColor": "#bee5eb", "width": "67px" },
+    classes: 'headerPreStage text-center',
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
-      return dtdataCriacao;
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear().toString().substr(-2) + '<br/>' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
+      //return dtdataCriacao;
+      return <div dangerouslySetInnerHTML={{ __html: `${dtdataCriacao}` }} />;
     }
   },
   {
     dataField: "Author.Title",
     classes: 'headerPreStage',
     text: "Criado por",
-    headerStyle: { "backgroundColor": "#bee5eb" },
+    headerStyle: { "backgroundColor": "#bee5eb", "width": "67px"  },
     headerClasses: 'text-center',
   },
 
-  /* 
-    {
-      dataField: "",
-      text: "",
-      headerStyle: { "backgroundColor": "#bee5eb", "width": "82px" },
-      formatter: (rowContent, row) => {
-        var id = row.ID;
-  
-  
-  
-        return (
-          <>
-            <button onClick={() => {
-  
-              var dataCriacao = new Date(row.Created);
-              var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear();
-  
-  
-              jQuery('#txtComponente').html(row.Title);
-              jQuery('#txtModelo').html(row.Modelo);
-              jQuery('#txtFabricante').html(row.Fabricante);
-              jQuery('#txtFW').html(row.FW);
-              jQuery('#txtBIOS').html(row.BIOS);
-              jQuery('#txtConexao').html(row.Conexao);
-              jQuery('#txtPORT').html(row.PORT);
-              jQuery('#txtSLOT').html(row.SLOT);
-              jQuery('#txtItemObrigatorio').html(row.ItemObrigatorio);
-              jQuery('#txtObservacao').html(row.Observacao);
-              jQuery('#txtCriado').html(dtdataCriacao);
-              jQuery('#txtCriadoPor').html(row.Author.Title);
-              jQuery("#modalDetalhesPreStageSoftware").modal({ backdrop: 'static', keyboard: false })
-  
-            }} className="btn btn-info btn-sm">Detalhes</button>
-  
-          </>
-        )
-  
-      }
-    }
-    */
+
 ]
 
 const tablecolumnsSetupBios = [
@@ -313,7 +265,7 @@ const tablecolumnsSetupBios = [
     classes: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear().toString().substr(-2) + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -350,7 +302,7 @@ const tablecolumnsCheckList = [
     classes: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear().toString().substr(-2) + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -387,7 +339,7 @@ const tablecolumnsSetupitensModulos = [
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear().toString().substr(-2) + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -434,7 +386,7 @@ const tablecolumnsFluxoAprovacaoDIPS = [
     headerClasses: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear().toString().substr(-2) + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -481,7 +433,7 @@ const tablecolumnsHistorico = [
     classes: 'text-center',
     formatter: (rowContent, row) => {
       var dataCriacao = new Date(row.Created);
-      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
+      var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear().toString().substr(-2) + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
       return dtdataCriacao;
     }
   },
@@ -547,6 +499,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
     jQuery("#btnConfirmarDeletar").hide();
     jQuery("#btnCofirmarDuplicar").hide();
 
+
     document
       .getElementById("btnImprimir")
       .addEventListener("click", (e: Event) => this.print());
@@ -591,6 +544,46 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
       .getElementById("btnExcluirDIPS")
       .addEventListener("click", (e: Event) => this.excluirDIPS());
 
+    document
+      .getElementById("headingInformacoesProduto")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingInformacoesProduto", "iconUpInformacoesProduto", "iconDownInformacoesProduto"));
+
+    document
+      .getElementById("headingPreStageSoftware")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingPreStageSoftware", "iconUpPreStage", "iconDownPreStage"));
+
+    document
+      .getElementById("headingAnexos")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingAnexos", "iconUpImagens", "iconDownImagens"));
+
+    document
+      .getElementById("headingArquivos")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingArquivos", "iconUpArquivos", "iconDownArquivos"));
+
+    document
+      .getElementById("headingPreStageHardware")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingPreStageHardware", "iconUpPreStageHardware", "iconDownPreStageHardware"));
+
+    document
+      .getElementById("headingSetupBios")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingSetupBios", "iconUpSetupBios", "iconDownSetupBios"));
+
+    document
+      .getElementById("headingSetupItensModulos")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingSetupItensModulos", "iconUpModulos", "iconDownModulos"));
+
+
+    document
+      .getElementById("headingCheckList")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingCheckList", "iconUpCheckList", "iconDownCheckList",));
+
+    document
+      .getElementById("headingFluxoAprovacaoDIPS")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingFluxoAprovacaoDIPS", "iconUpFluxoAprovacaoDIPS", "iconDownFluxoAprovacaoDIPS"));
+
+    document
+      .getElementById("headingHistorico")
+      .addEventListener("click", (e: Event) => this.mostraOculta("headingHistorico", "iconUpHistorico", "iconDownHistorico"));
 
 
     _web = new Web(this.props.context.pageContext.web.absoluteUrl);
@@ -692,12 +685,22 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
           <button style={{ "margin": "2px" }} id="btnEditarDocumento2" className="btn btn-success">Editar</button><br></br><br></br>
         </div>
 
+
+
+
+
         <div id="accordion">
 
           <div className="card">
             <div className="card-header btn" id="headingInformacoesProduto" data-toggle="collapse" data-target="#collapseInformacoesProduto" aria-expanded="true" aria-controls="collapseInformacoesProduto">
               <h5 className="mb-0 text-info">
                 Informações do produto
+                <span id='iconDownInformacoesProduto' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpInformacoesProduto' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseInformacoesProduto" className="collapse show" aria-labelledby="headingOne">
@@ -789,6 +792,12 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
             <div className="card-header btn" id="headingPreStageSoftware" data-toggle="collapse" data-target="#collapsePreStageSoftware" aria-expanded="true" aria-controls="collapsePreStageSoftware">
               <h5 className="mb-0 text-info">
                 Pré Stage de Software
+                <span id='iconDownPreStage' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpPreStage' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapsePreStageSoftware" className="collapse show" aria-labelledby="headingOne">
@@ -834,6 +843,12 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
             <div className="card-header btn" id="headingAnexos" data-toggle="collapse" data-target="#collapseAnexos" aria-expanded="true" aria-controls="collapseAnexos">
               <h5 className="mb-0 text-info">
                 Imagens
+                <span id='iconDownImagens' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpImagens' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseAnexos" className="collapse show" aria-labelledby="headingOne">
@@ -842,7 +857,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
                 <div className="form-group">
                   <div className="form-row ">
                     <div className="form-group col-md" >
-                      <div id='conteudoImagens'></div>
+                      <div className="form-group" id='conteudoImagens'></div>
                     </div>
                   </div>
                 </div>
@@ -855,6 +870,12 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
             <div className="card-header btn" id="headingArquivos" data-toggle="collapse" data-target="#collapseArquivos" aria-expanded="true" aria-controls="collapseArquivos">
               <h5 className="mb-0 text-info">
                 Arquivos
+                <span id='iconDownArquivos' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpArquivos' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseArquivos" className="collapse show" aria-labelledby="headingOne">
@@ -876,28 +897,39 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
             <div className="card-header btn" id="headingPreStageHardware" data-toggle="collapse" data-target="#collapsePreStageHardware" aria-expanded="true" aria-controls="collapsePreStageHardware">
               <h5 className="mb-0 text-info">
                 Pre Stage de Hardware
+                <span id='iconDownPreStageHardware' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpPreStageHardware' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapsePreStageHardware" className="collapse show" aria-labelledby="headingOne">
               <div className="card-body">
                 <div id='tabelaPreStageSoftware'>
-                  <BootstrapTable bootstrap4 responsive condensed hover={true} className="gridTodosItens" id="gridTodosItensPreStageSoftware" keyField='id' data={this.state.itemsListPreStageSoftware} columns={tablecolumnsPreStageSoftware} headerClasses="header-class" />
+                  <BootstrapTable bootstrap4 responsive striped condensed hover={false} className="gridTodosItens" id="gridTodosItensPreStageSoftware" keyField='id' data={this.state.itemsListPreStageSoftware} columns={tablecolumnsPreStageSoftware} headerClasses="header-class" />
                 </div>
               </div>
             </div>
           </div>
 
-
           <div className="card">
             <div className="card-header btn" id="headingSetupBios" data-toggle="collapse" data-target="#collapseSetupBios" aria-expanded="true" aria-controls="collapseSetupBios">
               <h5 className="mb-0 text-info">
                 Setup de BIOS
+                <span id='iconDownSetupBios' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpSetupBios' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseSetupBios" className="collapse show" aria-labelledby="headingOne">
               <div className="card-body">
                 <div id='tabelaSetupBios'>
-                  <BootstrapTable bootstrap4 responsive condensed hover={true} className="gridTodosItens" id="gridTodosItensSetupBios" keyField='id' data={this.state.itemsListSetupBios} columns={tablecolumnsSetupBios} headerClasses="header-class" />
+                  <BootstrapTable bootstrap4 responsive striped condensed hover={false} className="gridTodosItens" id="gridTodosItensSetupBios" keyField='id' data={this.state.itemsListSetupBios} columns={tablecolumnsSetupBios} headerClasses="header-class" />
                 </div>
               </div>
             </div>
@@ -907,12 +939,18 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
             <div className="card-header btn" id="headingSetupItensModulos" data-toggle="collapse" data-target="#collapseSetupItensModulos" aria-expanded="true" aria-controls="collapseSetupItensModulos">
               <h5 className="mb-0 text-info">
                 Setup de Itens/Módulos
+                <span id='iconDownModulos' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpModulos' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseSetupItensModulos" className="collapse show" aria-labelledby="headingOne">
               <div className="card-body">
                 <div id='tabelaSetupItensModulos'>
-                  <BootstrapTable bootstrap4 responsive condensed hover={true} className="gridTodosItens" id="gridTodosItensSetupItensModulos" keyField='id' data={this.state.itemsSetupItensModulos} columns={tablecolumnsSetupitensModulos} headerClasses="header-class" />
+                  <BootstrapTable bootstrap4 striped responsive condensed hover={false} className="gridTodosItens" id="gridTodosItensSetupItensModulos" keyField='id' data={this.state.itemsSetupItensModulos} columns={tablecolumnsSetupitensModulos} headerClasses="header-class" />
                 </div>
               </div>
             </div>
@@ -922,12 +960,18 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
             <div className="card-header btn" id="headingCheckList" data-toggle="collapse" data-target="#collapseCheckList" aria-expanded="true" aria-controls="collapseCheckList">
               <h5 className="mb-0 text-info">
                 Checklist
+                <span id='iconDownCheckList' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpCheckList' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseCheckList" className="collapse show" aria-labelledby="headingOne">
               <div className="card-body">
                 <div id='tabelaCheckList'>
-                  <BootstrapTable bootstrap4 responsive condensed hover={true} className="gridTodosItens" id="gridTodosItensCheckList" keyField='id' data={this.state.itemsCheckList} columns={tablecolumnsCheckList} headerClasses="header-class" />
+                  <BootstrapTable bootstrap4 striped responsive condensed hover={false} className="gridTodosItens" id="gridTodosItensCheckList" keyField='id' data={this.state.itemsCheckList} columns={tablecolumnsCheckList} headerClasses="header-class" />
                 </div>
               </div>
             </div>
@@ -937,12 +981,18 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
             <div className="card-header btn" id="headingFluxoAprovacaoDIPS" data-toggle="collapse" data-target="#collapseFluxoAprovacaoDIPS" aria-expanded="true" aria-controls="collapseFluxoAprovacaoDIPS">
               <h5 className="mb-0 text-info">
                 Fluxo de aprovação do DIPS
+                <span id='iconDownFluxoAprovacaoDIPS' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpFluxoAprovacaoDIPS' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseFluxoAprovacaoDIPS" className="collapse show" aria-labelledby="headingOne">
               <div className="card-body">
                 <div id='tabelaFluxoAprovacaoDIPS'>
-                  <BootstrapTable bootstrap4 responsive condensed hover={true} className="gridTodosItens" id="gridTodosItensFluxoAprovacaoDIPS" keyField='id' data={this.state.itemsFluxoAprovacaoDIPS} columns={tablecolumnsFluxoAprovacaoDIPS} headerClasses="header-class" />
+                  <BootstrapTable bootstrap4 responsive condensed striped hover={false} className="gridTodosItens" id="gridTodosItensFluxoAprovacaoDIPS" keyField='id' data={this.state.itemsFluxoAprovacaoDIPS} columns={tablecolumnsFluxoAprovacaoDIPS} headerClasses="header-class" />
                 </div>
               </div>
             </div>
@@ -952,12 +1002,18 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
             <div className="card-header btn" id="headingHistorico" data-toggle="collapse" data-target="#collapseHistorico" aria-expanded="true" aria-controls="collapseHistorico">
               <h5 className="mb-0 text-info">
                 Histórico de alteração
+                <span id='iconDownHistorico' style={{ "display": "none" }} className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </span>
+                <span id='iconUpHistorico' className="float-right cinza">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </span>
               </h5>
             </div>
             <div id="collapseHistorico" className="collapse show" aria-labelledby="headingOne">
               <div className="card-body">
                 <div id='tabelaHistorico'>
-                  <BootstrapTable bootstrap4 responsive condensed hover={true} className="gridTodosItens" id="gridTodosItensHistorico" keyField='id' data={this.state.itemsHistorico} columns={tablecolumnsHistorico} headerClasses="header-class" />
+                  <BootstrapTable bootstrap4 striped responsive condensed hover={false} className="gridTodosItens" id="gridTodosItensHistorico" keyField='id' data={this.state.itemsHistorico} columns={tablecolumnsHistorico} headerClasses="header-class" />
                 </div>
               </div>
             </div>
@@ -1392,20 +1448,13 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
             var versaoMidiaMatriz = resultData.d.results[i].MidiaMatrizVersaoMidia;
             var status = resultData.d.results[i].Status;
             var versao = resultData.d.results[i].Versao;
-
             var dataLiberacaoMidiaMatriz = new Date(resultData.d.results[i].MidiaMatrizDataLiberacao);
             var dtdataLiberacaoMidiaMatriz = ("0" + dataLiberacaoMidiaMatriz.getDate()).slice(-2) + '/' + ("0" + (dataLiberacaoMidiaMatriz.getMonth() + 1)).slice(-2) + '/' + dataLiberacaoMidiaMatriz.getFullYear();
             if (dtdataLiberacaoMidiaMatriz == "31/12/1969") dtdataLiberacaoMidiaMatriz = "";
-
             var arquivoInstalacaoMidiaMatriz = resultData.d.results[i].MidiaMatrizArquivoRoteiroInstala;
             var responsavelGeracaoMidiaMatriz = resultData.d.results[i].MidiaMatrizResponsavelGeracao;
-
-            // var arrInstalacaoMidiaMatriz = resultData.d.results[i].MidiaMatrizInstalacao;
-
             var strInstalacaoMidiaMatriz;
-
             var instalacaoMidiaMatriz = resultData.d.results[i].MidiaMatrizInstalacao;
-
             var arrTituloInstalacaoMidiaMatriz = [];
 
             if (instalacaoMidiaMatriz != null) {
@@ -1425,12 +1474,9 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
 
             } else strInstalacaoMidiaMatriz = "";
 
-
             var pacoteAdicionalSO = resultData.d.results[i].PacoteAdicionalSO;
             var midiaMatriz = resultData.d.results[i].MidiaMatriz;
-
             var siteAntigo = resultData.d.results[i].SiteAntigo;
-
             var sistemaOperacional;
 
             if (siteAntigo != true) {
@@ -1517,28 +1563,27 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
 
 
 
-  protected getImagens() {
+  protected async getImagens() {
 
     var montaImagem = "";
     var montaOutros = "";
+
     var url = `${this.props.siteurl}/_api/web/lists/getByTitle('Documentos')/items('${_documentoID}')/AttachmentFiles`;
     _url = this.props.siteurl;
-    console.log("url", url);
 
     $.ajax
       ({
         url: url,
         method: "GET",
+        async: false,
         headers:
         {
-          // Accept header: Specifies the format for response data from the server.
           "Accept": "application/json;odata=verbose"
         },
-        success: function (data, status, xhr) {
+
+        success: async (data) => {
 
           var dataresults = data.d.results;
-
-          // _testeGus = data.d.results;
 
           console.log("dataresults", dataresults);
 
@@ -1552,7 +1597,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
             var checkNomeArquivogif = false;
 
             var nomeArquivo = dataresults[i]["FileName"];
-            _arrNomeArquivo.push(nomeArquivo);
+            // _arrNomeArquivo.push(nomeArquivo);
             _arrNomeArquivoAttachmentFiles.push(nomeArquivo);
 
             checkNomeArquivoJPG = nomeArquivo.includes(".JPG");
@@ -1574,9 +1619,6 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
 
           }
 
-          //  $("#conteudoImagens").append(montaImagem);
-          //   $("#conteudoOutros").append(montaOutros);
-
 
         },
         error: function (xhr, status, error) {
@@ -1586,20 +1628,14 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
         console.log("Erro Anexo do item: ", error);
       });
 
-
     var relativeURL = window.location.pathname;
     var strRelativeURL = relativeURL.replace("SitePages/Documentos-Detalhes.aspx", "");
 
-    _web.getFolderByServerRelativeUrl(`${strRelativeURL}/Imagens/${_documentoID}`).files
+    await _web.getFolderByServerRelativeUrl(`${strRelativeURL}/Imagens/${_documentoID}`).files.orderBy('TimeLastModified', true)
       .expand('ListItemAllFields', 'Author').get().then(r => {
 
         console.log("r", r);
-        /*
-        r.Folders.forEach(item => {
-          console.log("item-doc", item);
-          console.log("entrou em folder");
-        })
-        */
+
         r.forEach(item => {
 
           console.log("entrou");
@@ -1613,7 +1649,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
 
           var nomeArquivo = item.Name;
 
-          _arrNomeArquivo.push(nomeArquivo);
+          // _arrNomeArquivo.push(nomeArquivo);
           _arrNomeArquivoFolder.push(nomeArquivo);
 
           checkNomeArquivoJPG = nomeArquivo.includes(".JPG");
@@ -1623,10 +1659,9 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
           checkNomeArquivoGIF = nomeArquivo.includes(".GIF");
           checkNomeArquivogif = nomeArquivo.includes(".gif");
 
-          console.log("item", item);
           if ((checkNomeArquivoJPG) || (checkNomeArquivojpg) || (checkNomeArquivoPNG) || (checkNomeArquivopng) || (checkNomeArquivoGIF) || (checkNomeArquivogif)) {
 
-            montaImagem += `<img class='imagensDIPS' src='${item.ServerRelativeUrl}'></img><br/>`;
+            montaImagem += `<img class='imagensDIPS' src='${item.ServerRelativeUrl}'></img><br/><br/>`;
 
           } else {
 
@@ -1636,13 +1671,16 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
 
         })
 
-        $("#conteudoImagens").append(montaImagem);
-        $("#conteudoOutros").append(montaOutros);
-
-
       }).catch((error: any) => {
         console.log("Erro onChangeCliente: ", error);
       });
+
+    $("#conteudoImagens").append(montaImagem);
+    $("#conteudoOutros").append(montaOutros);
+
+    console.log("_arrNomeArquivoAttachmentFiles", _arrNomeArquivoAttachmentFiles);
+    console.log("_arrNomeArquivoFolder", _arrNomeArquivoFolder);
+
   }
 
 
@@ -1777,10 +1815,6 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
     });
 
 
-
-
-
-
   }
 
   protected confirmarDuplicar() {
@@ -1810,11 +1844,6 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
       arrInstalacaoMidiaMatriz.push(jQuery(this).val());
     });
 
-    // var arrEmailElaboracao = [];
-    // $.each(jQuery("input[name='checkEmailElaboracao']:checked"), function () {
-    //   arrEmailElaboracao.push(jQuery(this).val());
-    // });
-
     var arrPacoteAdicionalSO = [];
     $.each(jQuery("input[name='checkPacoteAdicionalSO']:checked"), function () {
       arrPacoteAdicionalSO.push(jQuery(this).val());
@@ -1837,15 +1866,8 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
 
     var outrasInformacoes = _outrasInformacoes;
 
-    //var emailElaboracao;
     var pacoteAdicionalSO;
     var midiaMatriz;
-
-    // if (arrEmailElaboracao.length == 0) {
-    //   emailElaboracao = null;
-    // } else {
-    //   emailElaboracao = arrEmailElaboracao[0];
-    // }
 
     if (arrPacoteAdicionalSO.length == 0) {
       pacoteAdicionalSO = null;
@@ -1896,16 +1918,32 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
       })
   }
 
-  protected upload(id) {
+  protected async upload(id): Promise<void> {
 
-    _web.lists.getByTitle("Imagens").rootFolder.folders.add(`${id}`).then(async data => {
+    await _web.lists.getByTitle("Imagens").rootFolder.folders.add(`${id}`).then(async data => {
 
       console.log("_arrNomeArquivoAttachmentFiles", _arrNomeArquivoAttachmentFiles);
-      console.log("_arrNomeArquivoFolder", _arrNomeArquivoFolder);
+
+      if (_arrNomeArquivoAttachmentFiles.length > 0) {
+
+        for (var y = 0; y < _arrNomeArquivoAttachmentFiles.length; y++) {
+
+          var relativeURL = window.location.pathname;
+          var strRelativeURL = relativeURL.replace("SitePages/Documentos-Detalhes.aspx", "");
+
+          const destinationUrl = `${strRelativeURL}/Imagens/${id}/${_arrNomeArquivoAttachmentFiles[y]}`;
+          const enderecoArquivo = `${strRelativeURL}/Lists/Documentos/Attachments/${_documentoID}/${_arrNomeArquivoAttachmentFiles[y]}`;
+
+          await this.copiarArquivo(enderecoArquivo, destinationUrl);
+
+        }
+
+      }
+
 
       if (_arrNomeArquivoFolder.length > 0) {
 
-        var ultimoArquivoFolder = (_arrNomeArquivoFolder.length) - 1;
+        console.log("_arrNomeArquivoFolder", _arrNomeArquivoFolder);
 
         for (var i = 0; i < _arrNomeArquivoFolder.length; i++) {
 
@@ -1915,106 +1953,50 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
           const destinationUrl = `${strRelativeURL}/Imagens/${id}/${_arrNomeArquivoFolder[i]}`;
           const enderecoArquivo = `${strRelativeURL}Imagens/${_documentoID}/${_arrNomeArquivoFolder[i]}`;
 
-          console.log("destinationUrl", destinationUrl);
-          console.log("enderecoArquivo", enderecoArquivo);
+          await this.copiarArquivo(enderecoArquivo, destinationUrl);
+
+        }
+
+      }
+
+      this.cadastrarPreStage(id);
+
+
+    })
+      .catch((error: any) => {
+        console.log(error);
+      })
+
+  }
+
+  protected copiarArquivo(enderecoArquivo, destinationUrl): Promise<number> {
+    return new Promise<number>(resolve => {
+      setTimeout(async () => {
+        resolve(
 
           await _web.getFileByServerRelativePath(enderecoArquivo).copyTo(destinationUrl, false)
 
             .then(async response => {
 
-              console.log("duplicou arquivo folder!!");
-
-              if (ultimoArquivoFolder == i) {
-
-                if (_arrNomeArquivoAttachmentFiles.length > 0) {
-
-                  var ultimoArquivoAttachmentFiles = (_arrNomeArquivoAttachmentFiles.length) - 1;
-
-                  for (var x = 0; x < _arrNomeArquivoAttachmentFiles.length; x++) {
-
-                    var relativeURL = window.location.pathname;
-                    var strRelativeURL = relativeURL.replace("SitePages/Documentos-Detalhes.aspx", "");
-
-                    const destinationUrl = `${strRelativeURL}/Imagens/${id}/${_arrNomeArquivoAttachmentFiles[x]}`;
-                    const enderecoArquivo = `${strRelativeURL}/Lists/Documentos/Attachments/${_documentoID}/${_arrNomeArquivoAttachmentFiles[x]}`;
-
-                    console.log("destinationUrl", destinationUrl);
-                    console.log("enderecoArquivo", enderecoArquivo);
-
-                    await _web.getFileByServerRelativePath(enderecoArquivo).copyTo(destinationUrl, false)
-                      .then(response => {
-
-                        console.log("duplicou arquivo anexo!!");
-                        if (ultimoArquivoAttachmentFiles == x) this.cadastrarPreStage(id);
-
-                      })
-                      .catch((error: any) => {
-                        console.log(error);
-                      })
-
-                  }
-
-                } else {
-
-                  this.cadastrarPreStage(id);
-
-                }
-
-              }
+              console.log(`duplicou arquivo "${enderecoArquivo}"!!`);
 
             })
             .catch((error: any) => {
               console.log(error);
             })
 
-        }
-
-      } else {
-
-        if (_arrNomeArquivoAttachmentFiles.length > 0) {
-
-          var ultimoArquivoAttachmentFiles = (_arrNomeArquivoAttachmentFiles.length) - 1;
-
-          for (var y = 0; y < _arrNomeArquivoAttachmentFiles.length; y++) {
-
-            var relativeURL = window.location.pathname;
-            var strRelativeURL = relativeURL.replace("SitePages/Documentos-Detalhes.aspx", "");
-
-            const destinationUrl = `${strRelativeURL}/Imagens/${id}/${_arrNomeArquivoAttachmentFiles[y]}`;
-            const enderecoArquivo = `${strRelativeURL}/Lists/Documentos/Attachments/${_documentoID}/${_arrNomeArquivoAttachmentFiles[y]}`;
-
-            console.log("destinationUrl", destinationUrl);
-            console.log("enderecoArquivo", enderecoArquivo);
-
-            await _web.getFileByServerRelativePath(enderecoArquivo).copyTo(destinationUrl, false)
-              .then(response => {
-
-                console.log("duplicou arquivo anexo!!");
-                if (ultimoArquivoAttachmentFiles == y) this.cadastrarPreStage(id);
-
-              })
-              .catch((error: any) => {
-                console.log(error);
-              })
-
-          }
-
-        } else {
-
-          this.cadastrarPreStage(id);
-
-        }
-
-      }
-
-    }).catch(err => {
-      console.log("err", err);
+        );
+      }, 1500);
     });
-
   }
 
 
+
+
   protected cadastrarPreStage(id) {
+
+    //console.log("entrou no prestage");
+    //return false;
 
     jQuery.ajax({
       url: `${this.props.siteurl}/_api/web/lists/getbytitle('Pre Stage de Hardware')/items?$top=50&$orderby= ID asc&$select=ID,Title,Modelo,Fabricante,Created,Author/Title,FW,BIOS,PORT,SLOT,ItemObrigatorio,Observacao,Conexao&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
@@ -2259,6 +2241,30 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
 
   }
 
+  protected async mostraOculta(heading, up, down) {
+
+    var val = jQuery(`#${heading}`).attr('aria-expanded');
+
+    console.log("val", val);
+
+    if (val == "true") {
+
+      jQuery(`#${down}`).css("display", "block");
+      jQuery(`#${up}`).css("display", "none");
+
+    }
+    else {
+
+      jQuery(`#${down}`).css("display", "none");
+      jQuery(`#${up}`).css("display", "block");
+
+
+
+    }
+
+
+
+  }
 
 
 }
