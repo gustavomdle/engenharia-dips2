@@ -224,7 +224,19 @@ const tablecolumnsPreStageSoftware = [
 
       }
 
-      console.log("mostraBotao",mostraBotao);
+      else if (_status == "Aguardando aprovação do Suporte") {
+
+        if (_grupos.indexOf("DIPS - Suporte") !== -1) {
+
+          if (_versao == "-1") {
+
+            mostraBotao = true;
+
+          }
+
+        }
+
+      }
 
       if (mostraBotao) {
 
@@ -520,6 +532,20 @@ const tablecolumnsSetupBios = [
 
       }
 
+      else if (_status == "Aguardando aprovação do Suporte") {
+
+        if (_grupos.indexOf("DIPS - Suporte") !== -1) {
+
+          if (_versao == "-1") {
+
+            mostraBotao = true;
+
+          }
+
+        }
+
+      }
+
 
       if (mostraBotao) {
 
@@ -723,128 +749,143 @@ const tablecolumnsSetupitensModulos = [
 
       }
 
-      if(mostraBotao){
+      else if (_status == "Aguardando aprovação do Suporte") {
 
-      return (
-        <>
-          <button onClick={async () => {
+        if (_grupos.indexOf("DIPS - Suporte") !== -1) {
 
-            if (confirm("Deseja realmente excluir o Módulo: " + row.Title + "?") == true) {
+          if (_versao == "-1") {
 
-              const list = _web.lists.getByTitle("SetupItensModulos");
-              await list.items.getById(id).recycle()
-                .then(async response => {
+            mostraBotao = true;
 
-                  var texto = `O item ${row.Title} foi eliminado da lista Setup de Itens/Módulos`
+          }
 
-                  await _web.lists
-                    .getByTitle("Reprovações do Suporte")
-                    .items.add({
-                      Title: texto,
-                      DIPSId: _documentoID,
-                      VersaoReprovada: _versao.toString(),
-                      StatusAnterior: "Item eliminado",
-                      StatusAtual: _status
-                    })
-                    .then(response => {
+        }
 
-                      console.log("Item excluido!");
-                      jQuery("#modalSucessoExcluirModulos").modal({ backdrop: 'static', keyboard: false });
+      }
 
-                    })
-                    .catch((error: any) => {
-                      console.log(error);
-                    })
-
-
-                })
-                .catch((error: any) => {
-                  console.log(error);
-
-                })
-
-            } else {
-
-              return false.valueOf;
-            }
-
-          }} className="btn btn-info btnCustom btn-sm btnEdicaoListas">Excluir</button>&nbsp;
-          <button onClick={() => {
-
-            jQuery('#txtModulosID').val(row.ID);
-            jQuery('#txtItensModulosEditar').val(row.Title);
-            //jQuery('#txtParametrosSetupBIOSEditar').val(row.Itens);
-
-            var parametros = row.Parametros;
-            var txtParametros = "";
-
-            console.log("parametros", parametros);
-
-            if (parametros != null) {
-
-              txtParametros = parametros.replace(/<[\/]{0,1}(div)[^><]*>/g, "");
-              console.log("txtParametros", txtParametros);
-
-              if (txtParametros.includes("<font")) {
-
-                txtParametros = txtParametros.replace("font", "span");
-                txtParametros = txtParametros.replace("font", "span");
-
-              }
-
-              if (txtParametros.includes("color")) {
-
-                txtParametros = txtParametros.replace('color="', 'style="color:');
-
-              }
-
-              txtParametros = txtParametros.trim();
-
-            }
-
-            jQuery('#RichTextParametrosModulosEditar').find('.ql-editor').html(`${txtParametros}`);
-
-
-            _modulosParametros = parametros;
-
-            jQuery("#modalEditarModulos").modal({ backdrop: 'static', keyboard: false })
-
-          }} className="btn btn-info btnCustom btn-sm btnEdicaoListas">Editar</button>&nbsp;
-
-          <button onClick={() => {
-
-            var dataCriacao = new Date(row.Created);
-            var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
-
-            jQuery('#txtParametrosModulo').html(row.Parametros);
-            jQuery('#txtItensModulos').html(row.Title);
-            jQuery('#txtCriadoModulos').html(dtdataCriacao);
-            jQuery('#txtCriadoPorModulos').html(row.Author.Title);
-            jQuery("#modalDetalhesModulos").modal({ backdrop: 'static', keyboard: false })
-
-          }} className="btn btn-info btnCustom btn-sm">Detalhes</button>
-
-        </>
-      )}
-
-      else{
+      if (mostraBotao) {
 
         return (
           <>
+            <button onClick={async () => {
+
+              if (confirm("Deseja realmente excluir o Módulo: " + row.Title + "?") == true) {
+
+                const list = _web.lists.getByTitle("SetupItensModulos");
+                await list.items.getById(id).recycle()
+                  .then(async response => {
+
+                    var texto = `O item ${row.Title} foi eliminado da lista Setup de Itens/Módulos`
+
+                    await _web.lists
+                      .getByTitle("Reprovações do Suporte")
+                      .items.add({
+                        Title: texto,
+                        DIPSId: _documentoID,
+                        VersaoReprovada: _versao.toString(),
+                        StatusAnterior: "Item eliminado",
+                        StatusAtual: _status
+                      })
+                      .then(response => {
+
+                        console.log("Item excluido!");
+                        jQuery("#modalSucessoExcluirModulos").modal({ backdrop: 'static', keyboard: false });
+
+                      })
+                      .catch((error: any) => {
+                        console.log(error);
+                      })
+
+
+                  })
+                  .catch((error: any) => {
+                    console.log(error);
+
+                  })
+
+              } else {
+
+                return false.valueOf;
+              }
+
+            }} className="btn btn-info btnCustom btn-sm btnEdicaoListas">Excluir</button>&nbsp;
+            <button onClick={() => {
+
+              jQuery('#txtModulosID').val(row.ID);
+              jQuery('#txtItensModulosEditar').val(row.Title);
+              //jQuery('#txtParametrosSetupBIOSEditar').val(row.Itens);
+
+              var parametros = row.Parametros;
+              var txtParametros = "";
+
+              console.log("parametros", parametros);
+
+              if (parametros != null) {
+
+                txtParametros = parametros.replace(/<[\/]{0,1}(div)[^><]*>/g, "");
+                console.log("txtParametros", txtParametros);
+
+                if (txtParametros.includes("<font")) {
+
+                  txtParametros = txtParametros.replace("font", "span");
+                  txtParametros = txtParametros.replace("font", "span");
+
+                }
+
+                if (txtParametros.includes("color")) {
+
+                  txtParametros = txtParametros.replace('color="', 'style="color:');
+
+                }
+
+                txtParametros = txtParametros.trim();
+
+              }
+
+              jQuery('#RichTextParametrosModulosEditar').find('.ql-editor').html(`${txtParametros}`);
+
+
+              _modulosParametros = parametros;
+
+              jQuery("#modalEditarModulos").modal({ backdrop: 'static', keyboard: false })
+
+            }} className="btn btn-info btnCustom btn-sm btnEdicaoListas">Editar</button>&nbsp;
 
             <button onClick={() => {
-  
+
               var dataCriacao = new Date(row.Created);
               var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
-  
+
               jQuery('#txtParametrosModulo').html(row.Parametros);
               jQuery('#txtItensModulos').html(row.Title);
               jQuery('#txtCriadoModulos').html(dtdataCriacao);
               jQuery('#txtCriadoPorModulos').html(row.Author.Title);
               jQuery("#modalDetalhesModulos").modal({ backdrop: 'static', keyboard: false })
-  
+
             }} className="btn btn-info btnCustom btn-sm">Detalhes</button>
-  
+
+          </>
+        )
+      }
+
+      else {
+
+        return (
+          <>
+
+            <button onClick={() => {
+
+              var dataCriacao = new Date(row.Created);
+              var dtdataCriacao = ("0" + dataCriacao.getDate()).slice(-2) + '/' + ("0" + (dataCriacao.getMonth() + 1)).slice(-2) + '/' + dataCriacao.getFullYear() + ' ' + ("0" + (dataCriacao.getHours())).slice(-2) + ':' + ("0" + (dataCriacao.getMinutes())).slice(-2);
+
+              jQuery('#txtParametrosModulo').html(row.Parametros);
+              jQuery('#txtItensModulos').html(row.Title);
+              jQuery('#txtCriadoModulos').html(dtdataCriacao);
+              jQuery('#txtCriadoPorModulos').html(row.Author.Title);
+              jQuery("#modalDetalhesModulos").modal({ backdrop: 'static', keyboard: false })
+
+            }} className="btn btn-info btnCustom btn-sm">Detalhes</button>
+
           </>
         )
 
@@ -928,6 +969,20 @@ const tablecolumnsCheckList = [
         if (_grupos.indexOf("DIPS - Suporte") !== -1) {
 
           mostraBotao = true;
+
+        }
+
+      }
+
+      else if (_status == "Aguardando aprovação do Suporte") {
+
+        if (_grupos.indexOf("DIPS - Suporte") !== -1) {
+
+          if (_versao == "-1") {
+
+            mostraBotao = true;
+
+          }
 
         }
 
@@ -1318,7 +1373,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
       .getElementById("btnVoltar")
       .addEventListener("click", (e: Event) => this.voltar());
 
-      document
+    document
       .getElementById("headingInformacoesProduto")
       .addEventListener("click", (e: Event) => this.mostraOculta("headingInformacoesProduto", "iconUpInformacoesProduto", "iconDownInformacoesProduto"));
 
@@ -1334,7 +1389,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
       .getElementById("headingArquivos")
       .addEventListener("click", (e: Event) => this.mostraOculta("headingArquivos", "iconUpArquivos", "iconDownArquivos"));
 
-      document
+    document
       .getElementById("headingAnexar")
       .addEventListener("click", (e: Event) => this.mostraOculta("headingAnexar", "iconUpAnexarArquivos", "iconDownAnexarArquivos"));
 
@@ -1418,7 +1473,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     jQuery("#btnAbrirModalCadastrarModulos").hide();
     jQuery("#btnAbrirModalCadastrarCheckList").hide();
 
-      this.getDocumento();
+    this.getDocumento();
     this.getImagens();
     this.handler();
 
@@ -3393,6 +3448,11 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
             _status = status;
             _duplicado = resultData.d.results[i].Duplicado;
 
+            var versao = resultData.d.results[i].Versao;
+            _versao = versao;
+            _novaVersao = resultData.d.results[i].Versao;
+            _novaVersao++;
+
             if (_grupos.indexOf("DIPS - Engenharia (Elaborador)") !== -1) {
 
               jQuery("#cardAnexar").show();
@@ -3462,6 +3522,17 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
                 jQuery("#btnValidarAprovar").show();
                 jQuery("#divMotivoAprovacao").show();
 
+                if (_versao == "-1") {
+
+                  jQuery("#btnAbrirModalCadastrarPreStage").show();
+                  jQuery("#btnAbrirModalCadastrarPreStageEmLote").show();
+                  jQuery("#btnAbrirModalCadastrarSetupBIOS").show();
+                  jQuery("#btnAbrirModalCadastrarModulos").show();
+                  jQuery("#btnAbrirModalCadastrarCheckList").show();
+
+                }
+
+
               }
 
             }
@@ -3484,11 +3555,6 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
             }
 
-
-            var versao = resultData.d.results[i].Versao;
-            _versao = versao;
-            _novaVersao = resultData.d.results[i].Versao;
-            _novaVersao++;
 
             var dataLiberacaoMidiaMatriz = resultData.d.results[i].MidiaMatrizDataLiberacao;
             var arquivoInstalacaoMidiaMatriz = resultData.d.results[i].MidiaMatrizArquivoRoteiroInstala;
