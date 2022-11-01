@@ -3341,7 +3341,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     var reactHandlerPreStageSoftware = this;
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Pre Stage de Hardware')/items?$top=50&$orderby= ID asc&$select=ID,Title,Modelo,Fabricante,Created,Author/Title,FW,BIOS,PORT,SLOT,ItemObrigatorio,Observacao,Conexao&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Pre Stage de Hardware')/items?$top=50&$orderby= Created asc&$select=ID,Title,Modelo,Fabricante,Created,Author/Title,FW,BIOS,PORT,SLOT,ItemObrigatorio,Observacao,Conexao&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
@@ -3360,7 +3360,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     var reactHandlerSetupBios = this;
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Setup de BIOS')/items?$top=50&$orderby= ID asc&$select=ID,Title,Itens,Created,Author/Title&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Setup de BIOS')/items?$top=50&$orderby= Created asc&$select=ID,Title,Itens,Created,Author/Title&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
@@ -3379,7 +3379,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     var reactHandlerSetupItensModulos = this;
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('SetupItensModulos')/items?$top=50&$orderby= ID asc&$select=ID,Title,Created,Author/Title,Parametros&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('SetupItensModulos')/items?$top=50&$orderby= Created asc&$select=ID,Title,Created,Author/Title,Parametros&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
@@ -3399,7 +3399,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     var reactHandlerCheckList = this;
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Checklist')/items?$top=50&$orderby= ID asc&$select=ID,Title,Created,Author/Title,Divergencias&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Checklist')/items?$top=50&$orderby= Created asc&$select=ID,Title,Created,Author/Title,Divergencias&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
@@ -3529,6 +3529,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
                   jQuery("#btnAbrirModalCadastrarSetupBIOS").show();
                   jQuery("#btnAbrirModalCadastrarModulos").show();
                   jQuery("#btnAbrirModalCadastrarCheckList").show();
+
+                  jQuery("#btnValidarSalvar").show();
 
                 }
 
@@ -3767,6 +3769,9 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
           }
 
+        }else {
+          alert("DIPS não encontrado!");
+          window.location.href = `Documentos-Todos.aspx`;
         }
 
       },
@@ -3993,7 +3998,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     var reactHandlerPreStageSoftware = this;
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Pre Stage de Hardware')/items?$top=200&$orderby= ID asc&$select=ID,Title,Modelo,Fabricante,Created,Author/Title,FW,BIOS,PORT,SLOT,ItemObrigatorio,Observacao,Conexao&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Pre Stage de Hardware')/items?$top=200&$orderby= Created asc&$select=ID,Title,Modelo,Fabricante,Created,Author/Title,FW,BIOS,PORT,SLOT,ItemObrigatorio,Observacao,Conexao&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
@@ -4027,7 +4032,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     var reactHandlerSetupBios = this;
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Setup de BIOS')/items?$top=50&$orderby= ID asc&$select=ID,Title,Itens,Created,Author/Title&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Setup de BIOS')/items?$top=50&$orderby= Created asc&$select=ID,Title,Itens,Created,Author/Title&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
@@ -4059,7 +4064,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     var reactHandlerSetupItensModulos = this;
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('SetupItensModulos')/items?$top=50&$orderby= ID asc&$select=ID,Title,Created,Author/Title,Parametros&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('SetupItensModulos')/items?$top=50&$orderby= Created asc&$select=ID,Title,Created,Author/Title,Parametros&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
@@ -4091,7 +4096,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
     var reactHandlerCheckList = this;
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Checklist')/items?$top=50&$orderby= ID asc&$select=ID,Title,Created,Author/Title,Divergencias&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Checklist')/items?$top=50&$orderby= Created asc&$select=ID,Title,Created,Author/Title,Divergencias&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {

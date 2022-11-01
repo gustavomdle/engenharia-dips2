@@ -749,7 +749,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
                   <div className="form-row">
                     <div className="form-group col-md border m-1">
                       <label htmlFor="txtDescricaoPacoteAdicionalSO">Descrição (Pacote Adicional ao S.O. OEM)</label><br></br>
-                      <span className="text-info" id='txtDescricaoPacoteAdicionalSO'>dsfdsfdsf</span>
+                      <span className="text-info" id='txtDescricaoPacoteAdicionalSO'></span>
                     </div>
                     <div className="form-group col-md border m-1">
                       <label htmlFor="txtResponsavelPacoteAdicionalSO">Responsável (Pacote Adicional ao S.O. OEM)</label><br></br>
@@ -1550,6 +1550,9 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
 
           }
 
+        }else {
+          alert("DIPS não encontrado!");
+          window.location.href = `Documentos-Todos.aspx`;
         }
 
       },
@@ -1696,7 +1699,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
     var reactHandlerPreStageSoftware = this;
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Pre Stage de Hardware')/items?$top=50&$orderby= ID asc&$select=ID,Title,Modelo,Fabricante,Created,Author/Title,FW,BIOS,PORT,SLOT,ItemObrigatorio,Observacao,Conexao&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Pre Stage de Hardware')/items?$top=50&$orderby= Created asc&$select=ID,Title,Modelo,Fabricante,Created,Author/Title,FW,BIOS,PORT,SLOT,ItemObrigatorio,Observacao,Conexao&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
@@ -1720,7 +1723,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
     var reactHandlerSetupBios = this;
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Setup de BIOS')/items?$top=50&$orderby= ID asc&$select=ID,Title,Itens,Created,Author/Title&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Setup de BIOS')/items?$top=50&$orderby= Created asc&$select=ID,Title,Itens,Created,Author/Title&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
@@ -1739,7 +1742,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
     var reactHandlerSetupItensModulos = this;
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('SetupItensModulos')/items?$top=50&$orderby= ID asc&$select=ID,Title,Created,Author/Title,Parametros&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('SetupItensModulos')/items?$top=50&$orderby= Created asc&$select=ID,Title,Created,Author/Title,Parametros&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
@@ -1759,7 +1762,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
     var reactHandlerCheckList = this;
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Checklist')/items?$top=50&$orderby= ID asc&$select=ID,Title,Created,Author/Title,Divergencias&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Checklist')/items?$top=50&$orderby= Created asc&$select=ID,Title,Created,Author/Title,Divergencias&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
@@ -1778,10 +1781,11 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
     var reactHandlerFluxoAprovacaoDIPS = this;
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Reprovações do Suporte')/items?$top=50&$orderby= ID asc&$select=ID,Title,Created,Author/Title,VersaoReprovada,StatusAnterior,StatusAtual&$expand=Author&$filter=((DIPS/ID eq ${_documentoID}) and (StatusAnterior ne 'Alteração') and (StatusAnterior ne 'Inclusão') and (StatusAnterior ne 'Item eliminado'))`,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Reprovações do Suporte')/items?$top=50&$orderby=Ordem,Created&$select=ID,Title,Created,Ordem,Author/Title,VersaoReprovada,StatusAnterior,StatusAtual&$expand=Author&$filter=((DIPS/ID eq ${_documentoID}) and (StatusAnterior ne 'Alteração') and (StatusAnterior ne 'Inclusão') and (StatusAnterior ne 'Item eliminado'))`,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
+        console.log("resultData FluxoAprovacaoDIPS",resultData);
         if (resultData.d.results.length > 0) {
           jQuery("#tabelaFluxoAprovacaoDIPS").show();
           reactHandlerFluxoAprovacaoDIPS.setState({
@@ -1798,7 +1802,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
 
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Reprovações do Suporte')/items?$top=50&$orderby= ID asc&$select=ID,Title,Created,Author/Title,VersaoReprovada,StatusAnterior,StatusAtual&$expand=Author&$filter=(DIPS/ID eq ${_documentoID}) and (VersaoReprovada ne '-1') and ((StatusAnterior eq 'Alteração') or (StatusAnterior eq 'Inclusão') or (StatusAnterior eq 'Item eliminado'))`,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Reprovações do Suporte')/items?$top=50&$orderby=Ordem,Created&$select=ID,Title,Created,Author/Title,VersaoReprovada,StatusAnterior,StatusAtual&$expand=Author&$filter=(DIPS/ID eq ${_documentoID}) and (VersaoReprovada ne '-1') and ((StatusAnterior eq 'Alteração') or (StatusAnterior eq 'Inclusão') or (StatusAnterior eq 'Item eliminado'))`,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
@@ -1999,7 +2003,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
     //return false;
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Pre Stage de Hardware')/items?$top=50&$orderby= ID asc&$select=ID,Title,Modelo,Fabricante,Created,Author/Title,FW,BIOS,PORT,SLOT,ItemObrigatorio,Observacao,Conexao&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Pre Stage de Hardware')/items?$top=50&$orderby= Created asc&$select=ID,Title,Modelo,Fabricante,Created,Author/Title,FW,BIOS,PORT,SLOT,ItemObrigatorio,Observacao,Conexao&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: async (resultData) => {
@@ -2053,7 +2057,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
     console.log("entrou no duplicar cadastrarSetupBIOS");
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Setup de BIOS')/items?$top=50&$orderby= ID asc&$select=ID,Title,Itens,Created,Author/Title&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Setup de BIOS')/items?$top=50&$orderby= Created asc&$select=ID,Title,Itens,Created,Author/Title&$expand=Author&$filter=DIP/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: async (resultData) => {
@@ -2099,7 +2103,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
   protected cadastrarModulos(id) {
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('SetupItensModulos')/items?$top=50&$orderby= ID asc&$select=ID,Title,Created,Author/Title,Parametros&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('SetupItensModulos')/items?$top=50&$orderby= Created asc&$select=ID,Title,Created,Author/Title,Parametros&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: async (resultData) => {
@@ -2144,7 +2148,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
   protected cadastrarCheckList(id) {
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Checklist')/items?$top=50&$orderby= ID asc&$select=ID,Title,Created,Author/Title,Divergencias&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Checklist')/items?$top=50&$orderby= Created asc&$select=ID,Title,Created,Author/Title,Divergencias&$expand=Author&$filter=DIPS/ID eq ` + _documentoID,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: async (resultData) => {

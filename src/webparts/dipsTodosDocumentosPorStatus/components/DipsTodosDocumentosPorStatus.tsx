@@ -286,7 +286,7 @@ export default class DipsTodosDocumentosPorStatus extends React.Component<IDipsT
 
     return (
 
-      <><p>Resultado: <span className="text-info" id="txtCount"></span> proposta(s) encontrada(s)</p>
+      <><p>Resultado: <span className="text-info" id="txtCount"></span> DIPS encontrado(s)</p>
         <div className={styles.container}>
           <BootstrapTable bootstrap4 responsive striped condensed hover={false} className="gridTodosItens" id="gridTodosItens" keyField='id' data={this.state.itemsList} columns={empTablecolumns} headerClasses="header-class" pagination={paginationFactory(paginationOptions)} filter={filterFactory()} />
         </div></>
