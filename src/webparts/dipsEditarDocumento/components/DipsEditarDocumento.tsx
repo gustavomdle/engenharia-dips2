@@ -79,6 +79,9 @@ var _arrAlteracoesPreStage = [];
 var _colunasExcel = [];
 var _duplicado;
 
+var _ultimoNroOrdem = 0;
+var _novoNroOrdem = 0;
+
 export interface IShowEmployeeStates {
   itemsListPreStageSoftware: any[]
 }
@@ -241,6 +244,7 @@ const tablecolumnsPreStageSoftware = [
       if (mostraBotao) {
 
         return (
+
           <>
             <div>
               <button onClick={async () => {
@@ -251,7 +255,7 @@ const tablecolumnsPreStageSoftware = [
                   await list.items.getById(id).recycle()
                     .then(async response => {
 
-                      var texto = `O item ${row.Title} foi eliminado da lista Pre Stage de Hardware`
+                      var texto = `O item ${row.Title} foi eliminado da lista Pre Stage de Hardware`;
 
                       await _web.lists
                         .getByTitle("Reprovações do Suporte")
@@ -261,6 +265,7 @@ const tablecolumnsPreStageSoftware = [
                           VersaoReprovada: _versao.toString(),
                           StatusAnterior: "Item eliminado",
                           StatusAtual: _status
+
                         })
                         .then(response => {
 
@@ -1177,6 +1182,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
   }
 
   public async componentDidMount() {
+
 
     // jQuery("#modalSucessoExcluirSetupBIOS").modal({ backdrop: 'static', keyboard: false });
     //jQuery("#modalSucessoExcluirPreStage").modal({ backdrop: 'static', keyboard: false });
@@ -3769,7 +3775,7 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
           }
 
-        }else {
+        } else {
           alert("DIPS não encontrado!");
           window.location.href = `Documentos-Todos.aspx`;
         }
@@ -5208,6 +5214,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
     var motivo = $("#txtMotivoAprovacao").val();
 
+    this.verificaUltimoNroOrdem();
+
     if (opcao == "Salvar") {
 
       if (_arrAlteracoesFormPrincipal.length != 0) {
@@ -5225,6 +5233,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
     else if (opcao == "EnviarAprovacao") {
 
+      this.verificaUltimoNroOrdem();
+
       await _web.lists
         .getByTitle("Reprovações do Suporte")
         .items.add({
@@ -5232,7 +5242,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
           DIPSId: _documentoID,
           VersaoReprovada: _versao.toString(),
           StatusAnterior: _status,
-          StatusAtual: _novoStatus
+          StatusAtual: _novoStatus,
+          Ordem: _novoNroOrdem
         })
         .then(response => {
 
@@ -5273,7 +5284,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
           DIPSId: _documentoID,
           VersaoReprovada: _versao.toString(),
           StatusAnterior: _status,
-          StatusAtual: _novoStatus
+          StatusAtual: _novoStatus,
+          Ordem: _novoNroOrdem
         })
         .then(response => {
 
@@ -5313,7 +5325,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
           DIPSId: _documentoID,
           VersaoReprovada: _versao.toString(),
           StatusAnterior: _status,
-          StatusAtual: _novoStatus
+          StatusAtual: _novoStatus,
+          Ordem: _novoNroOrdem
         })
         .then(response => {
 
@@ -5355,7 +5368,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
           DIPSId: _documentoID,
           VersaoReprovada: _novaVersao.toString(),
           StatusAnterior: _status,
-          StatusAtual: _novoStatus
+          StatusAtual: _novoStatus,
+          Ordem: _novoNroOrdem
         })
         .then(async response => {
 
@@ -5388,7 +5402,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
           DIPSId: _documentoID,
           VersaoReprovada: _versao.toString(),
           StatusAnterior: _status,
-          StatusAtual: _novoStatus
+          StatusAtual: _novoStatus,
+          Ordem: _novoNroOrdem
         })
         .then(response => {
 
@@ -5424,7 +5439,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
           DIPSId: _documentoID,
           VersaoReprovada: _versao.toString(),
           StatusAnterior: "Alteração",
-          StatusAtual: _status
+          StatusAtual: _status,
+          Ordem: _novoNroOrdem
         })
         .then(response => {
 
@@ -5450,6 +5466,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
   protected async gravaHistoricoAdicionarItem(texto, lista) {
 
+    this.verificaUltimoNroOrdem();
+
     await _web.lists
       .getByTitle("Reprovações do Suporte")
       .items.add({
@@ -5457,7 +5475,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
         DIPSId: _documentoID,
         VersaoReprovada: _versao.toString(),
         StatusAnterior: "Inclusão",
-        StatusAtual: _status
+        StatusAtual: _status,
+        Ordem: _novoNroOrdem
       })
       .then(response => {
 
@@ -5495,6 +5514,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
   protected async gravaHistoricoAlterarItem(texto, lista) {
 
+    this.verificaUltimoNroOrdem();
+
     await _web.lists
       .getByTitle("Reprovações do Suporte")
       .items.add({
@@ -5502,7 +5523,8 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
         DIPSId: _documentoID,
         VersaoReprovada: _versao.toString(),
         StatusAnterior: "Alteração",
-        StatusAtual: _status
+        StatusAtual: _status,
+        Ordem: _novoNroOrdem
       })
       .then(response => {
 
@@ -5543,11 +5565,50 @@ export default class DipsEditarDocumento extends React.Component<IDipsEditarDocu
 
   }
 
-  protected async gravaHistoricoExcluirItem(texto, lista) {
+  protected async verificaUltimoNroOrdem() {
 
+    _ultimoNroOrdem = 0;
+    _novoNroOrdem = 0;
 
+    jQuery.ajax({
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Reprovações do Suporte')/items?$top=1&$orderby= Ordem desc&$select=ID,Title,Ordem&$filter=DIPS/ID eq ${_documentoID}`,
+      type: "GET",
+      async: false,
+      headers: { 'Accept': 'application/json; odata=verbose;' },
+      success: async (resultData) => {
+        console.log("resultData FluxoAprovacaoDIPS", resultData);
+
+        if (resultData.d.results.length > 0) {
+
+          for (var i = 0; i < resultData.d.results.length; i++) {
+
+            console.log("ultimoNro:", resultData.d.results[i].Ordem);
+
+            if (resultData.d.results[i].Ordem == "") {
+
+              _ultimoNroOrdem = 0;
+
+            } else _ultimoNroOrdem = resultData.d.results[i].Ordem;
+
+            _ultimoNroOrdem++;
+
+            _novoNroOrdem = _ultimoNroOrdem;
+
+            console.log("novoNroOrdem:", _novoNroOrdem);
+
+          }
+
+        }
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR.responseText);
+      }
+    });
 
   }
+
+
+
 
   protected voltar() {
     history.back();

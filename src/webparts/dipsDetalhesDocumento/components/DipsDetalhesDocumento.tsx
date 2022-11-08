@@ -1802,7 +1802,7 @@ export default class DipsDetalhesDocumento extends React.Component<IDipsDetalhes
 
 
     jQuery.ajax({
-      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Reprovações do Suporte')/items?$top=50&$orderby=Ordem,Created&$select=ID,Title,Created,Author/Title,VersaoReprovada,StatusAnterior,StatusAtual&$expand=Author&$filter=(DIPS/ID eq ${_documentoID}) and (VersaoReprovada ne '-1') and ((StatusAnterior eq 'Alteração') or (StatusAnterior eq 'Inclusão') or (StatusAnterior eq 'Item eliminado'))`,
+      url: `${this.props.siteurl}/_api/web/lists/getbytitle('Reprovações do Suporte')/items?$top=50&$orderby=VersaoReprovada,Created,Ordem&$select=ID,Title,Created,Author/Title,VersaoReprovada,StatusAnterior,StatusAtual&$expand=Author&$filter=(DIPS/ID eq ${_documentoID}) and (VersaoReprovada ne '-1') and ((StatusAnterior eq 'Alteração') or (StatusAnterior eq 'Inclusão') or (StatusAnterior eq 'Item eliminado'))`,
       type: "GET",
       headers: { 'Accept': 'application/json; odata=verbose;' },
       success: function (resultData) {
