@@ -780,7 +780,7 @@ export default class DipsNovoDocumento extends React.Component<IDipsNovoDocument
   protected async fecharSucesso() {
 
     jQuery("#modalSucesso").modal('hide');
-    window.location.href = `Documentos-Editar.aspx?DocumentoID=` + _documentoID;
+  //  window.location.href = `Documentos-Editar.aspx?DocumentoID=` + _documentoID;
 
   }
 
